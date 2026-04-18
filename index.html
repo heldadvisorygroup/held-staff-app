@@ -999,13 +999,46 @@ async function saveItem() {
 
 // ── CSV Export ──
 function exportCSV() {
-  const cols=['Room','Photo','Item Description','Brand / Maker','Disposition','Condition','Quantity','Data Tag Photo','Model #','Serial #','Receipt Photo','Retailer','Replacement Source','Purchase Price (each)','Purchase Price (total)','Age (yrs / mos)','Replacement Value (each)','Replacement Value (total)','Depreciation Category','Depreciation %','Depreciation Amount','Actual Cash Value (each)','Actual Cash Value (total)','Notes','Appraisal Flag'];
-  const rows=allItems.map(i=>[i.room||'',i.photo_files||'',i.item_description||'',i.brand_maker||'',i.disposition||'',i.condition||'',i.quantity||1,'','','','',i.retailer||'',i.replacement_source||'',i.purchase_price_each||'',(i.purchase_price_each&&i.quantity)?(i.purchase_price_each*i.quantity).toFixed(2):'','',i.replacement_value_each||'',(i.replacement_value_each&&i.quantity)?(i.replacement_value_each*i.quantity).toFixed(2):'',i.depreciation_category||'',i.depreciation_pct?(i.depreciation_pct/100).toFixed(4):'',' ','','',i.notes||'',i.appraisal_flag?'YES':'']);
-  const csv=[cols,...rows].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const blob=new Blob([csv],{type:'text/csv'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url; a.download=`Held_${currentEngagement.client_code}_Inventory_${new Date().toISOString().split('T')[0]}.csv`; a.click();
+  const cols = [
+    'Room','Photo','Item Description','Brand / Maker','Disposition','Condition',
+    'Quantity','Data Tag Photo','Model #','Serial #','Receipt Photo','Retailer',
+    'Replacement Source','Purchase Price (each)','Purchase Price (total)',
+    'Age (yrs / mos)','Replacement Value (each)','Replacement Value (total)',
+    'Depreciation Category','Depreciation %','Depreciation Amount',
+    'Actual Cash Value (each)','Actual Cash Value (total)'
+  ];
+  const rows = allItems.map(i => {
+    const desc = (i.appraisal_flag ? '⚑ ' : '') + (i.item_description || '') + (i.notes ? ' | ' + i.notes : '');
+    return [
+      i.room || '',
+      i.photo_files || '',
+      desc,
+      i.brand_maker || '',
+      i.disposition || '',
+      i.condition || '',
+      i.quantity || 1,
+      '','','','',
+      i.retailer || '',
+      i.replacement_source || '',
+      i.purchase_price_each || '',
+      (i.purchase_price_each && i.quantity) ? (i.purchase_price_each * i.quantity).toFixed(2) : '',
+      '',
+      i.replacement_value_each || '',
+      (i.replacement_value_each && i.quantity) ? (i.replacement_value_each * i.quantity).toFixed(2) : '',
+      i.depreciation_category || '',
+      i.depreciation_pct ? (i.depreciation_pct / 100).toFixed(4) : '',
+      '','',''
+    ];
+  });
+  const csv = [cols, ...rows].map(r =>
+    r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')
+  ).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `Held_${currentEngagement.client_code}_Inventory_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
   URL.revokeObjectURL(url);
 }
 </script>
