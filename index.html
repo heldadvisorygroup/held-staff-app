@@ -34,7 +34,6 @@
     font-weight: 300;
   }
 
-  /* ── Login ──────────────────────────────────────────────────────────────── */
   #login-screen {
     min-height: 100vh;
     display: flex;
@@ -61,34 +60,11 @@
     background: var(--lime);
   }
 
-  .login-logo {
-    font-family: var(--font-display);
-    font-size: 36px;
-    color: var(--ink);
-    margin-bottom: 2px;
-    line-height: 1;
-  }
-
-  .login-sub {
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-mid);
-    margin-bottom: 40px;
-    font-weight: 400;
-  }
+  .login-logo { font-family: var(--font-display); font-size: 36px; color: var(--ink); margin-bottom: 2px; line-height: 1; }
+  .login-sub { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mid); margin-bottom: 40px; font-weight: 400; }
 
   .form-group { margin-bottom: 20px; }
-
-  .form-group label {
-    display: block;
-    font-size: 10px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--ink-mid);
-    margin-bottom: 7px;
-    font-weight: 500;
-  }
+  .form-group label { display: block; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-mid); margin-bottom: 7px; font-weight: 500; }
 
   .form-group input,
   .form-group select,
@@ -108,461 +84,142 @@
 
   .form-group input:focus,
   .form-group select:focus,
-  .form-group textarea:focus {
-    border-color: var(--teal);
-    background: var(--white);
-  }
+  .form-group textarea:focus { border-color: var(--teal); background: var(--white); }
 
   .form-group select option { background: var(--bg); }
   .form-group textarea { resize: vertical; min-height: 80px; }
 
-  .btn {
-    display: inline-block;
-    padding: 11px 28px;
-    font-family: var(--font-body);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    cursor: pointer;
-    border: none;
-    transition: all 0.18s;
-  }
-
-  .btn-primary {
-    background: var(--ink);
-    color: var(--bg);
-    width: 100%;
-    text-align: center;
-  }
-
+  .btn { display: inline-block; padding: 11px 28px; font-family: var(--font-body); font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; border: none; transition: all 0.18s; }
+  .btn-primary { background: var(--ink); color: var(--bg); width: 100%; text-align: center; }
   .btn-primary:hover { background: var(--teal); color: var(--white); }
-
-  .btn-secondary {
-    background: transparent;
-    border: 1px solid var(--border-strong);
-    color: var(--ink-mid);
-  }
-
+  .btn-secondary { background: transparent; border: 1px solid var(--border-strong); color: var(--ink-mid); }
   .btn-secondary:hover { border-color: var(--ink); color: var(--ink); }
-
-  .btn-save {
-    background: var(--teal);
-    color: var(--white);
-    padding: 9px 22px;
-    font-size: 11px;
-  }
-
+  .btn-save { background: var(--teal); color: var(--white); padding: 9px 22px; font-size: 11px; }
   .btn-save:hover { background: #6A9A93; }
   .btn-small { padding: 7px 16px; font-size: 10px; }
 
-  #login-error {
-    color: #8B3A3A;
-    font-size: 12px;
-    margin-top: 12px;
-    display: none;
-    font-style: italic;
-  }
+  #login-error { color: #8B3A3A; font-size: 12px; margin-top: 12px; display: none; font-style: italic; }
 
-  /* ── App Shell ──────────────────────────────────────────────────────────── */
   #app { display: none; min-height: 100vh; }
 
-  .app-header {
-    background: var(--ink);
-    padding: 0 32px;
-    height: 54px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .header-logo {
-    font-family: var(--font-display);
-    font-size: 22px;
-    color: var(--bg);
-    letter-spacing: 0.02em;
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-
+  .app-header { background: var(--ink); padding: 0 32px; height: 54px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .header-logo { font-family: var(--font-display); font-size: 22px; color: var(--bg); letter-spacing: 0.02em; }
+  .header-right { display: flex; align-items: center; gap: 20px; }
   .header-user { font-size: 12px; color: var(--sage); letter-spacing: 0.04em; }
-
-  .header-code {
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    background: var(--lime);
-    color: var(--ink);
-    padding: 3px 10px;
-    font-weight: 500;
-  }
-
-  .btn-logout {
-    background: none;
-    border: 1px solid rgba(171,173,154,0.4);
-    color: var(--sage);
-    padding: 5px 14px;
-    font-family: var(--font-body);
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.18s;
-  }
-
+  .header-code { font-size: 11px; letter-spacing: 0.12em; background: var(--lime); color: var(--ink); padding: 3px 10px; font-weight: 500; }
+  .btn-logout { background: none; border: 1px solid rgba(171,173,154,0.4); color: var(--sage); padding: 5px 14px; font-family: var(--font-body); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.18s; }
   .btn-logout:hover { border-color: var(--bg); color: var(--bg); }
 
-  /* ── Engagement Screen ──────────────────────────────────────────────────── */
-  #engagement-screen {
-    padding: 52px 36px;
-    max-width: 760px;
-    margin: 0 auto;
-  }
-
-  .screen-label {
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    margin-bottom: 8px;
-    font-weight: 500;
-  }
-
-  .screen-title {
-    font-family: var(--font-display);
-    font-size: 38px;
-    color: var(--ink);
-    margin-bottom: 36px;
-    line-height: 1.1;
-  }
-
+  #engagement-screen { padding: 52px 36px; max-width: 760px; margin: 0 auto; }
+  .screen-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 8px; font-weight: 500; }
+  .screen-title { font-family: var(--font-display); font-size: 38px; color: var(--ink); margin-bottom: 36px; line-height: 1.1; }
   .engagement-list { display: flex; flex-direction: column; gap: 10px; }
 
-  .engagement-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    padding: 20px 24px;
-    cursor: pointer;
-    transition: all 0.18s;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-  }
-
-  .engagement-card:hover {
-    border-color: var(--teal);
-    background: var(--bg-card);
-    transform: translateX(3px);
-  }
-
-  .engagement-code {
-    font-family: var(--font-display);
-    font-size: 18px;
-    color: var(--ink);
-    margin-bottom: 3px;
-  }
-
+  .engagement-card { background: var(--white); border: 1px solid var(--border); padding: 20px 24px; cursor: pointer; transition: all 0.18s; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .engagement-card:hover { border-color: var(--teal); background: var(--bg-card); transform: translateX(3px); }
+  .engagement-code { font-family: var(--font-display); font-size: 18px; color: var(--ink); margin-bottom: 3px; }
   .engagement-meta { font-size: 12px; color: var(--ink-soft); font-style: italic; }
+  .engagement-status { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 10px; font-weight: 500; flex-shrink: 0; }
+  .status-active   { background: rgba(134,175,168,0.2); color: var(--teal); }
+  .status-review   { background: rgba(237,252,78,0.25); color: #5A6000; }
+  .status-complete { background: rgba(71,72,56,0.1);    color: var(--ink-mid); }
+  .status-archived { background: rgba(71,72,56,0.06);   color: var(--ink-soft); }
 
-  .engagement-status {
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    font-weight: 500;
-    flex-shrink: 0;
-  }
-
-  .status-active  { background: rgba(134,175,168,0.2); color: var(--teal); }
-  .status-review  { background: rgba(237,252,78,0.25); color: #5A6000; }
-  .status-complete{ background: rgba(71,72,56,0.1);    color: var(--ink-mid); }
-  .status-archived{ background: rgba(71,72,56,0.06);   color: var(--ink-soft); }
-
-  /* ── Items Screen ───────────────────────────────────────────────────────── */
   #items-screen { padding: 32px 32px 96px; }
-
-  .items-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-
+  .items-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; }
   .items-header-left { display: flex; align-items: center; gap: 14px; }
-
-  .btn-back {
-    background: none;
-    border: 1px solid var(--border-strong);
-    color: var(--ink-mid);
-    padding: 7px 14px;
-    font-family: var(--font-body);
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.18s;
-    flex-shrink: 0;
-  }
-
+  .btn-back { background: none; border: 1px solid var(--border-strong); color: var(--ink-mid); padding: 7px 14px; font-family: var(--font-body); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.18s; flex-shrink: 0; }
   .btn-back:hover { border-color: var(--ink); color: var(--ink); }
-
   .items-title { font-family: var(--font-display); font-size: 28px; color: var(--ink); }
-
   .items-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-
-  .filter-select {
-    background: var(--white);
-    border: 1px solid var(--border-strong);
-    color: var(--ink);
-    padding: 7px 12px;
-    font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 300;
-    outline: none;
-    cursor: pointer;
-    -webkit-appearance: none;
-  }
-
-  .btn-add {
-    background: var(--lime);
-    border: none;
-    color: var(--ink);
-    padding: 8px 18px;
-    font-family: var(--font-body);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.18s;
-  }
-
+  .filter-select { background: var(--white); border: 1px solid var(--border-strong); color: var(--ink); padding: 7px 12px; font-family: var(--font-body); font-size: 12px; font-weight: 300; outline: none; cursor: pointer; -webkit-appearance: none; }
+  .btn-add { background: var(--lime); border: none; color: var(--ink); padding: 8px 18px; font-family: var(--font-body); font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.18s; }
   .btn-add:hover { background: #d8ec30; }
 
-  /* ── Table ──────────────────────────────────────────────────────────────── */
-  .items-table-wrap {
-    overflow-x: auto;
-    border: 1px solid var(--border);
-    background: var(--white);
-  }
-
+  .items-table-wrap { overflow-x: auto; border: 1px solid var(--border); background: var(--white); }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
-
-  thead th {
-    background: var(--ink);
-    color: var(--sage);
-    font-size: 9px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    padding: 11px 13px;
-    text-align: left;
-    white-space: nowrap;
-    font-weight: 400;
-  }
-
-  tbody tr {
-    border-bottom: 1px solid rgba(71,72,56,0.08);
-    transition: background 0.12s;
-  }
-
+  thead th { background: var(--ink); color: var(--sage); font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; padding: 11px 13px; text-align: left; white-space: nowrap; font-weight: 400; }
+  tbody tr { border-bottom: 1px solid rgba(71,72,56,0.08); transition: background 0.12s; }
   tbody tr:hover         { background: var(--bg-card); }
   tbody tr.flagged       { background: rgba(139,58,58,0.05); }
   tbody tr.flagged:hover { background: rgba(139,58,58,0.09); }
-
-  tbody td { padding: 11px 13px; color: var(--ink); vertical-align: middle; }
-
-  .td-desc {
-    max-width: 260px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-weight: 400;
-  }
-
+  tbody td { padding: 10px 13px; color: var(--ink); vertical-align: middle; }
+  .td-desc { max-width: 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 400; }
   .td-flag { color: #8B3A3A; font-size: 13px; }
 
-  .badge {
-    display: inline-block;
-    padding: 2px 8px;
-    font-size: 9px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    font-weight: 500;
-  }
+  .thumb-strip { display: flex; gap: 4px; align-items: center; }
+  .thumb { width: 36px; height: 36px; object-fit: cover; border: 1px solid var(--border); cursor: pointer; transition: transform 0.15s; flex-shrink: 0; }
+  .thumb:hover { transform: scale(1.08); border-color: var(--teal); }
+  .thumb-pdf { width: 36px; height: 36px; background: rgba(139,58,58,0.1); border: 1px solid rgba(139,58,58,0.3); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 500; color: #8B3A3A; letter-spacing: 0.05em; cursor: pointer; flex-shrink: 0; transition: background 0.15s; }
+  .thumb-pdf:hover { background: rgba(139,58,58,0.18); }
+  .thumb-more { font-size: 10px; color: var(--ink-soft); white-space: nowrap; }
 
+  .badge { display: inline-block; padding: 2px 8px; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
   .badge-excellent { background: rgba(134,175,168,0.2); color: #2D6B63; }
   .badge-good      { background: rgba(237,252,78,0.3);  color: #4A5200; }
   .badge-fair      { background: rgba(171,173,154,0.3); color: var(--ink-mid); }
   .badge-draft     { background: rgba(71,72,56,0.08);   color: var(--ink-soft); }
   .badge-complete  { background: rgba(134,175,168,0.2); color: #2D6B63; }
 
-  .btn-edit {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--ink-mid);
-    padding: 4px 12px;
-    font-family: var(--font-body);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    cursor: pointer;
-    transition: all 0.15s;
-    white-space: nowrap;
-  }
-
+  .btn-edit { background: none; border: 1px solid var(--border); color: var(--ink-mid); padding: 4px 12px; font-family: var(--font-body); font-size: 10px; letter-spacing: 0.08em; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
   .btn-edit:hover { border-color: var(--teal); color: var(--teal); }
 
-  .empty-state {
-    text-align: center;
-    padding: 72px 32px;
-    color: var(--ink-soft);
-    font-style: italic;
-  }
+  .empty-state { text-align: center; padding: 72px 32px; color: var(--ink-soft); font-style: italic; }
+  .empty-state h3 { font-family: var(--font-display); font-size: 26px; font-weight: 400; margin-bottom: 8px; color: var(--ink); }
+  .loading { text-align: center; padding: 60px; color: var(--ink-soft); font-size: 12px; letter-spacing: 0.08em; font-style: italic; }
 
-  .empty-state h3 {
-    font-family: var(--font-display);
-    font-size: 26px;
-    font-weight: 400;
-    margin-bottom: 8px;
-    color: var(--ink);
-  }
-
-  .loading {
-    text-align: center;
-    padding: 60px;
-    color: var(--ink-soft);
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    font-style: italic;
-  }
-
-  /* ── Export Bar ─────────────────────────────────────────────────────────── */
-  .export-bar {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: var(--ink);
-    padding: 13px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    z-index: 50;
-    gap: 16px;
-  }
-
+  .export-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--ink); padding: 13px 32px; display: flex; align-items: center; justify-content: space-between; z-index: 50; gap: 16px; }
   .export-info { font-size: 12px; color: var(--sage); letter-spacing: 0.04em; }
   .export-info strong { color: var(--bg); }
-
-  .btn-export {
-    background: var(--lime);
-    color: var(--ink);
-    border: none;
-    padding: 9px 22px;
-    font-family: var(--font-body);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: background 0.18s;
-    flex-shrink: 0;
-  }
-
+  .btn-export { background: var(--lime); color: var(--ink); border: none; padding: 9px 22px; font-family: var(--font-body); font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: background 0.18s; flex-shrink: 0; }
   .btn-export:hover { background: #d8ec30; }
 
-  /* ── Modal ──────────────────────────────────────────────────────────────── */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(71,72,56,0.55);
-    z-index: 200;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 32px 16px;
-    overflow-y: auto;
-  }
-
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(71,72,56,0.55); z-index: 200; align-items: flex-start; justify-content: center; padding: 32px 16px; overflow-y: auto; }
   .modal-overlay.open { display: flex; }
-
-  .modal {
-    background: var(--white);
-    border: 1px solid var(--border-strong);
-    width: 100%;
-    max-width: 700px;
-    position: relative;
-  }
-
-  .modal::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--lime);
-  }
-
-  .modal-header {
-    padding: 28px 30px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
-  }
-
+  .modal { background: var(--white); border: 1px solid var(--border-strong); width: 100%; max-width: 700px; position: relative; }
+  .modal::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--lime); }
+  .modal-header { padding: 28px 30px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
   .modal-title { font-family: var(--font-display); font-size: 22px; color: var(--ink); line-height: 1.3; }
-
-  .modal-close {
-    background: none;
-    border: none;
-    color: var(--ink-soft);
-    font-size: 18px;
-    cursor: pointer;
-    padding: 0;
-    line-height: 1;
-    flex-shrink: 0;
-    transition: color 0.15s;
-  }
-
+  .modal-close { background: none; border: none; color: var(--ink-soft); font-size: 18px; cursor: pointer; padding: 0; line-height: 1; flex-shrink: 0; transition: color 0.15s; }
   .modal-close:hover { color: var(--ink); }
-
   .modal-body { padding: 24px 30px; }
-
   .modal-section { margin-bottom: 28px; }
-
-  .modal-section-title {
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--teal);
-    font-weight: 500;
-    margin-bottom: 16px;
-    padding-bottom: 7px;
-    border-bottom: 1px solid rgba(134,175,168,0.3);
-  }
-
+  .modal-section-title { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--teal); font-weight: 500; margin-bottom: 16px; padding-bottom: 7px; border-bottom: 1px solid rgba(134,175,168,0.3); }
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .form-grid .span-2 { grid-column: span 2; }
-
-  .modal-footer {
-    padding: 16px 30px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-top: 1px solid var(--border);
-    gap: 12px;
-  }
-
+  .modal-footer { padding: 16px 30px 24px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); gap: 12px; }
   .save-status { font-size: 12px; color: var(--ink-soft); font-style: italic; }
   .save-status.success { color: #2D6B63; }
   .save-status.error   { color: #8B3A3A; }
+
+  /* ── Attachments ── */
+  .upload-area { border: 2px dashed var(--border-strong); padding: 20px; text-align: center; cursor: pointer; transition: all 0.18s; background: var(--bg); position: relative; }
+  .upload-area:hover, .upload-area.dragover { border-color: var(--teal); background: rgba(134,175,168,0.06); }
+  .upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .upload-area-text { font-size: 12px; color: var(--ink-mid); pointer-events: none; }
+  .upload-area-text strong { color: var(--teal); }
+
+  .attachment-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; margin-bottom: 12px; }
+  .attachment-item { position: relative; border: 1px solid var(--border); background: var(--bg-card); overflow: hidden; }
+  .attachment-item img { width: 100%; height: 80px; object-fit: cover; display: block; cursor: pointer; }
+  .attachment-item .attachment-pdf { width: 100%; height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(139,58,58,0.07); cursor: pointer; gap: 4px; }
+  .attachment-item .attachment-pdf span:first-child { font-size: 22px; }
+  .attachment-item .attachment-pdf span:last-child { font-size: 9px; font-weight: 500; color: #8B3A3A; letter-spacing: 0.05em; text-transform: uppercase; }
+  .attachment-name { font-size: 9px; color: var(--ink-soft); padding: 4px 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .attachment-delete { position: absolute; top: 3px; right: 3px; background: rgba(139,58,58,0.85); color: white; border: none; width: 18px; height: 18px; border-radius: 50%; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; opacity: 0; transition: opacity 0.15s; }
+  .attachment-item:hover .attachment-delete { opacity: 1; }
+
+  .pending-file { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: rgba(134,175,168,0.1); border: 1px solid rgba(134,175,168,0.3); margin-bottom: 4px; font-size: 12px; }
+  .pending-file-name { color: var(--ink-mid); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pending-file-remove { background: none; border: none; color: var(--ink-soft); cursor: pointer; font-size: 14px; padding: 0 4px; flex-shrink: 0; }
+  .pending-file-remove:hover { color: #8B3A3A; }
+
+  /* ── Lightbox ── */
+  #lightbox { display: none; position: fixed; inset: 0; background: rgba(30,30,20,0.92); z-index: 500; align-items: center; justify-content: center; padding: 40px; }
+  #lightbox.open { display: flex; }
+  #lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  #lightbox-close { position: absolute; top: 20px; right: 24px; background: none; border: none; color: white; font-size: 28px; cursor: pointer; opacity: 0.7; transition: opacity 0.15s; }
+  #lightbox-close:hover { opacity: 1; }
 
   @media (max-width: 640px) {
     .form-grid { grid-template-columns: 1fr; }
@@ -579,25 +236,19 @@
   const POCKETBASE_URL = 'https://db.heldadvisorygroup.com';
 </script>
 
-<!-- ── Login ── -->
+<!-- Login -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">Held</div>
     <div class="login-sub">Advisory Group &nbsp;·&nbsp; Staff Portal</div>
-    <div class="form-group">
-      <label>Email</label>
-      <input type="email" id="login-email" autocomplete="email">
-    </div>
-    <div class="form-group">
-      <label>Password</label>
-      <input type="password" id="login-password" autocomplete="current-password">
-    </div>
+    <div class="form-group"><label>Email</label><input type="email" id="login-email" autocomplete="email"></div>
+    <div class="form-group"><label>Password</label><input type="password" id="login-password" autocomplete="current-password"></div>
     <button class="btn btn-primary" onclick="doLogin()">Sign In</button>
     <div id="login-error">Incorrect email or password. Please try again.</div>
   </div>
 </div>
 
-<!-- ── App ── -->
+<!-- App -->
 <div id="app">
   <header class="app-header">
     <div class="header-logo">Held</div>
@@ -608,16 +259,12 @@
     </div>
   </header>
 
-  <!-- Engagements -->
   <div id="engagement-screen">
     <div class="screen-label">Staff Portal</div>
     <div class="screen-title">Engagements</div>
-    <div id="engagement-list" class="engagement-list">
-      <div class="loading">Loading engagements…</div>
-    </div>
+    <div id="engagement-list" class="engagement-list"><div class="loading">Loading engagements…</div></div>
   </div>
 
-  <!-- Items -->
   <div id="items-screen" style="display:none;">
     <div class="items-header">
       <div class="items-header-left">
@@ -625,9 +272,7 @@
         <div class="items-title" id="items-title">Items</div>
       </div>
       <div class="items-controls">
-        <select class="filter-select" id="room-filter" onchange="filterItems()">
-          <option value="">All Rooms</option>
-        </select>
+        <select class="filter-select" id="room-filter" onchange="filterItems()"><option value="">All Rooms</option></select>
         <select class="filter-select" id="status-filter" onchange="filterItems()">
           <option value="">All Status</option>
           <option value="draft">Draft</option>
@@ -640,17 +285,9 @@
       <table>
         <thead>
           <tr>
-            <th>⚑</th>
-            <th>Room</th>
-            <th>Description</th>
-            <th>Brand</th>
-            <th>Qty</th>
-            <th>Condition</th>
-            <th>Model #</th>
-            <th>Serial #</th>
-            <th>Repl. Value</th>
-            <th>Status</th>
-            <th></th>
+            <th>⚑</th><th>Attachments</th><th>Room</th><th>Description</th>
+            <th>Brand</th><th>Qty</th><th>Condition</th><th>Model #</th>
+            <th>Serial #</th><th>Repl. Value</th><th>Status</th><th></th>
           </tr>
         </thead>
         <tbody id="items-tbody"></tbody>
@@ -658,17 +295,13 @@
     </div>
   </div>
 
-  <!-- Export Bar -->
   <div class="export-bar" id="export-bar" style="display:none;">
-    <div class="export-info">
-      Engagement <strong id="export-code"></strong> &nbsp;·&nbsp;
-      <strong id="export-count">0</strong> items
-    </div>
+    <div class="export-info">Engagement <strong id="export-code"></strong> &nbsp;·&nbsp; <strong id="export-count">0</strong> items</div>
     <button class="btn-export" onclick="exportCSV()">Export to CSV</button>
   </div>
 </div>
 
-<!-- ── Edit Modal ── -->
+<!-- Edit Modal -->
 <div class="modal-overlay" id="item-modal">
   <div class="modal">
     <div class="modal-header">
@@ -680,46 +313,21 @@
       <div class="modal-section">
         <div class="modal-section-title">Item Identity</div>
         <div class="form-grid">
-          <div class="form-group span-2">
-            <label>Item Description *</label>
-            <input type="text" id="f-desc" placeholder="e.g. Mid-century 3-drawer dresser, teak veneer, tapered legs">
-          </div>
-          <div class="form-group">
-            <label>Brand / Maker</label>
-            <input type="text" id="f-brand">
-          </div>
-          <div class="form-group">
-            <label>Room Code</label>
-            <input type="text" id="f-room" placeholder="PLR, KIT, PMB…">
-          </div>
+          <div class="form-group span-2"><label>Item Description *</label><input type="text" id="f-desc" placeholder="e.g. Mid-century 3-drawer dresser, teak veneer, tapered legs"></div>
+          <div class="form-group"><label>Brand / Maker</label><input type="text" id="f-brand"></div>
+          <div class="form-group"><label>Room Code</label><input type="text" id="f-room" placeholder="PLR, KIT, PMB…"></div>
           <div class="form-group">
             <label>Disposition</label>
-            <select id="f-disposition">
-              <option value="">— select —</option>
-              <option value="restorable">Restorable</option>
-              <option value="non_restorable">Non-Restorable</option>
-              <option value="unknown">Unknown</option>
-            </select>
+            <select id="f-disposition"><option value="">— select —</option><option value="restorable">Restorable</option><option value="non_restorable">Non-Restorable</option><option value="unknown">Unknown</option></select>
           </div>
           <div class="form-group">
             <label>Condition</label>
-            <select id="f-condition">
-              <option value="">— select —</option>
-              <option value="Excellent">Excellent</option>
-              <option value="Good">Good</option>
-              <option value="Fair">Fair</option>
-            </select>
+            <select id="f-condition"><option value="">— select —</option><option value="Excellent">Excellent</option><option value="Good">Good</option><option value="Fair">Fair</option></select>
           </div>
-          <div class="form-group">
-            <label>Quantity</label>
-            <input type="number" id="f-qty" min="1" value="1">
-          </div>
+          <div class="form-group"><label>Quantity</label><input type="number" id="f-qty" min="1" value="1"></div>
           <div class="form-group">
             <label>Status</label>
-            <select id="f-status">
-              <option value="draft">Draft</option>
-              <option value="complete">Complete</option>
-            </select>
+            <select id="f-status"><option value="draft">Draft</option><option value="complete">Complete</option></select>
           </div>
         </div>
       </div>
@@ -727,66 +335,47 @@
       <div class="modal-section">
         <div class="modal-section-title">Identification</div>
         <div class="form-grid">
-          <div class="form-group">
-            <label>Model #</label>
-            <input type="text" id="f-model">
-          </div>
-          <div class="form-group">
-            <label>Serial #</label>
-            <input type="text" id="f-serial">
-          </div>
-          <div class="form-group span-2">
-            <label>Photo Files (comma-separated filenames)</label>
-            <input type="text" id="f-photos" placeholder="Held-2026-0001_PLR_001_wide_01.JPG, …">
-          </div>
+          <div class="form-group"><label>Model #</label><input type="text" id="f-model"></div>
+          <div class="form-group"><label>Serial #</label><input type="text" id="f-serial"></div>
+          <div class="form-group span-2"><label>Photo Files (comma-separated filenames)</label><input type="text" id="f-photos" placeholder="Held-2026-0001_PLR_001_wide_01.JPG, …"></div>
           <div class="form-group">
             <label>Appraisal Recommended</label>
-            <select id="f-flag">
-              <option value="false">No</option>
-              <option value="true">Yes — flag for appraisal</option>
-            </select>
+            <select id="f-flag"><option value="false">No</option><option value="true">Yes — flag for appraisal</option></select>
           </div>
         </div>
       </div>
 
       <div class="modal-section">
+        <div class="modal-section-title">Attachments — Photos, Invoices &amp; Appraisals</div>
+        <div id="existing-attachments" class="attachment-grid"></div>
+        <div class="upload-area" id="upload-area"
+             ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+          <input type="file" id="f-attachments" multiple accept="image/*,.pdf" onchange="handleFileSelect(event)">
+          <div class="upload-area-text">
+            <strong>Drag &amp; drop</strong> or click to upload<br>
+            <span style="font-size:11px;color:var(--ink-soft);">Photos (JPG, PNG, HEIC) and PDFs — invoices, appraisals, receipts</span>
+          </div>
+        </div>
+        <div id="pending-uploads"></div>
+      </div>
+
+      <div class="modal-section">
         <div class="modal-section-title">Value &amp; Source</div>
         <div class="form-grid">
-          <div class="form-group">
-            <label>Retailer</label>
-            <input type="text" id="f-retailer">
-          </div>
-          <div class="form-group">
-            <label>Replacement Source</label>
-            <input type="text" id="f-repl-source">
-          </div>
-          <div class="form-group">
-            <label>Purchase Price (each) $</label>
-            <input type="number" id="f-purchase" step="0.01" min="0">
-          </div>
-          <div class="form-group">
-            <label>Replacement Value (each) $</label>
-            <input type="number" id="f-repl-value" step="0.01" min="0">
-          </div>
-          <div class="form-group">
-            <label>Depreciation Category</label>
-            <input type="text" id="f-depr-cat" placeholder="e.g. Upholstered Furniture">
-          </div>
-          <div class="form-group">
-            <label>Depreciation %</label>
-            <input type="number" id="f-depr-pct" step="1" min="0" max="100" placeholder="e.g. 10">
-          </div>
-          <div class="form-group span-2">
-            <label>Notes</label>
-            <textarea id="f-notes" placeholder="Any details relevant to insurance documentation…"></textarea>
-          </div>
+          <div class="form-group"><label>Retailer</label><input type="text" id="f-retailer"></div>
+          <div class="form-group"><label>Replacement Source</label><input type="text" id="f-repl-source"></div>
+          <div class="form-group"><label>Purchase Price (each) $</label><input type="number" id="f-purchase" step="0.01" min="0"></div>
+          <div class="form-group"><label>Replacement Value (each) $</label><input type="number" id="f-repl-value" step="0.01" min="0"></div>
+          <div class="form-group"><label>Depreciation Category</label><input type="text" id="f-depr-cat" placeholder="e.g. Upholstered Furniture"></div>
+          <div class="form-group"><label>Depreciation %</label><input type="number" id="f-depr-pct" step="1" min="0" max="100" placeholder="e.g. 10"></div>
+          <div class="form-group span-2"><label>Notes</label><textarea id="f-notes" placeholder="Any details relevant to insurance documentation…"></textarea></div>
         </div>
       </div>
 
     </div>
     <div class="modal-footer">
       <div class="save-status" id="save-status"></div>
-      <div style="display:flex; gap:10px;">
+      <div style="display:flex;gap:10px;">
         <button class="btn btn-secondary btn-small" onclick="closeModal()">Cancel</button>
         <button class="btn btn-save btn-small" onclick="saveItem()">Save Item</button>
       </div>
@@ -794,38 +383,39 @@
   </div>
 </div>
 
-<script>
-// ── State ──
-let authToken = null;
-let currentUser = null;
-let currentEngagement = null;
-let allItems = [];
-let editingItemId = null;
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLightbox()">
+  <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
 
-// ── Auth ──
+<script>
+const POCKETBASE_URL_JS = 'https://db.heldadvisorygroup.com';
+let authToken = null, currentUser = null, currentEngagement = null;
+let allItems = [], editingItemId = null;
+let pendingFiles = [], filesToDelete = [];
+
+// Auth
 async function doLogin() {
-  const email = document.getElementById('login-email').value.trim();
-  const pass  = document.getElementById('login-password').value;
-  const errEl = document.getElementById('login-error');
-  errEl.style.display = 'none';
-  if (!email || !pass) { errEl.style.display='block'; errEl.textContent='Please enter your email and password.'; return; }
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-password').value;
+  const errEl=document.getElementById('login-error');
+  errEl.style.display='none';
+  if(!email||!pass){errEl.style.display='block';errEl.textContent='Please enter your email and password.';return;}
   try {
-    const res = await fetch(`${POCKETBASE_URL}/api/collections/users/auth-with-password`, {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ identity: email, password: pass })
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Login failed');
-    authToken = data.token; currentUser = data.record;
-    document.getElementById('header-user').textContent = currentUser.name || currentUser.email;
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
+    const res=await fetch(`${POCKETBASE_URL}/api/collections/users/auth-with-password`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({identity:email,password:pass})});
+    const data=await res.json();
+    if(!res.ok) throw new Error(data.message||'Login failed');
+    authToken=data.token; currentUser=data.record;
+    document.getElementById('header-user').textContent=currentUser.name||currentUser.email;
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='block';
     loadEngagements();
-  } catch(e) { errEl.style.display='block'; errEl.textContent='Incorrect email or password. Please try again.'; }
+  } catch(e){errEl.style.display='block';errEl.textContent='Incorrect email or password. Please try again.';}
 }
 
 function doLogout() {
-  authToken=null; currentUser=null; currentEngagement=null; allItems=[];
+  authToken=null;currentUser=null;currentEngagement=null;allItems=[];
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('app').style.display='none';
   document.getElementById('login-email').value='';
@@ -833,33 +423,29 @@ function doLogout() {
   document.getElementById('header-code').style.display='none';
 }
 
-document.addEventListener('keydown', e => {
-  if (e.key==='Enter' && document.getElementById('login-screen').style.display!=='none') doLogin();
-});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('login-screen').style.display!=='none')doLogin();});
 
-// ── Engagements ──
+// Engagements
 async function loadEngagements() {
-  const listEl = document.getElementById('engagement-list');
-  listEl.innerHTML = '<div class="loading">Loading engagements…</div>';
+  const listEl=document.getElementById('engagement-list');
+  listEl.innerHTML='<div class="loading">Loading engagements…</div>';
   try {
-    const res  = await fetch(`${POCKETBASE_URL}/api/collections/engagements/records?sort=-engagement_date&perPage=50`, { headers:{'Authorization':authToken} });
-    const data = await res.json();
-    if (!data.items || data.items.length===0) {
-      listEl.innerHTML='<div class="empty-state"><h3>No Engagements</h3><p>No active engagements assigned. Contact your administrator.</p></div>'; return;
-    }
+    const res=await fetch(`${POCKETBASE_URL}/api/collections/engagements/records?sort=-engagement_date&perPage=50`,{headers:{'Authorization':authToken}});
+    const data=await res.json();
+    if(!data.items||data.items.length===0){listEl.innerHTML='<div class="empty-state"><h3>No Engagements</h3><p>No active engagements assigned. Contact your administrator.</p></div>';return;}
     listEl.innerHTML='';
-    data.items.forEach(eng => {
-      const card = document.createElement('div'); card.className='engagement-card';
+    data.items.forEach(eng=>{
+      const card=document.createElement('div');card.className='engagement-card';
       card.innerHTML=`<div><div class="engagement-code">${eng.client_code}</div><div class="engagement-meta">${eng.engagement_date?eng.engagement_date.split(' ')[0]:'—'}&nbsp;·&nbsp;Tier ${eng.tier||'—'}</div></div><span class="engagement-status status-${eng.status||'active'}">${eng.status||'active'}</span>`;
-      card.onclick=()=>openEngagement(eng); listEl.appendChild(card);
+      card.onclick=()=>openEngagement(eng);listEl.appendChild(card);
     });
-  } catch(e) { listEl.innerHTML=`<div class="empty-state"><h3>Error</h3><p>${e.message}</p></div>`; }
+  } catch(e){listEl.innerHTML=`<div class="empty-state"><h3>Error</h3><p>${e.message}</p></div>`;}
 }
 
 async function openEngagement(eng) {
   currentEngagement=eng;
   const codeEl=document.getElementById('header-code');
-  codeEl.textContent=eng.client_code; codeEl.style.display='inline';
+  codeEl.textContent=eng.client_code;codeEl.style.display='inline';
   document.getElementById('items-title').textContent=eng.client_code;
   document.getElementById('export-code').textContent=eng.client_code;
   document.getElementById('engagement-screen').style.display='none';
@@ -876,17 +462,17 @@ function showEngagements() {
   document.getElementById('header-code').style.display='none';
 }
 
-// ── Items ──
+// Items
 async function loadItems() {
   const tbody=document.getElementById('items-tbody');
-  tbody.innerHTML='<tr><td colspan="11" class="loading">Loading items…</td></tr>';
+  tbody.innerHTML='<tr><td colspan="12" class="loading">Loading items…</td></tr>';
   try {
     const res=await fetch(`${POCKETBASE_URL}/api/collections/items/records?filter=(engagement_id='${currentEngagement.id}')&perPage=500&sort=room,item_description`,{headers:{'Authorization':authToken}});
     const data=await res.json();
     allItems=data.items||[];
     document.getElementById('export-count').textContent=allItems.length;
-    populateRoomFilter(); renderItems(allItems);
-  } catch(e) { tbody.innerHTML=`<tr><td colspan="11" style="padding:24px;color:#8B3A3A;font-style:italic;">${e.message}</td></tr>`; }
+    populateRoomFilter();renderItems(allItems);
+  } catch(e){tbody.innerHTML=`<tr><td colspan="12" style="padding:24px;color:#8B3A3A;font-style:italic;">${e.message}</td></tr>`;}
 }
 
 function populateRoomFilter() {
@@ -902,31 +488,108 @@ function filterItems() {
   renderItems(allItems.filter(i=>(!room||i.room===room)&&(!status||i.status===status)));
 }
 
+function attachmentUrl(itemId,filename) {
+  return `${POCKETBASE_URL}/api/files/items/${itemId}/${encodeURIComponent(filename)}`;
+}
+function isImage(f){return /\.(jpg|jpeg|png|gif|webp|heic|heif)$/i.test(f);}
+
 function renderItems(items) {
   const tbody=document.getElementById('items-tbody');
-  if (items.length===0){tbody.innerHTML='<tr><td colspan="11" class="empty-state" style="padding:52px;font-style:italic;color:var(--ink-soft);">No items found. Use "+ Add Item" to begin.</td></tr>';return;}
+  if(items.length===0){tbody.innerHTML='<tr><td colspan="12" class="empty-state" style="padding:52px;font-style:italic;color:var(--ink-soft);">No items found. Use "+ Add Item" to begin.</td></tr>';return;}
   tbody.innerHTML='';
   items.forEach(item=>{
     const tr=document.createElement('tr');
     if(item.appraisal_flag) tr.classList.add('flagged');
     const condBadge=item.condition?`<span class="badge badge-${item.condition.toLowerCase()}">${item.condition}</span>`:'<span style="color:var(--ink-soft)">—</span>';
     const statBadge=item.status?`<span class="badge badge-${item.status}">${item.status}</span>`:'<span style="color:var(--ink-soft)">—</span>';
-    tr.innerHTML=`<td class="td-flag">${item.appraisal_flag?'⚑':''}</td><td style="color:var(--ink-soft);font-size:12px;">${item.room||'—'}</td><td class="td-desc" title="${(item.item_description||'').replace(/"/g,"'")}">${item.item_description||'—'}</td><td style="color:var(--ink-mid);font-size:12px;">${item.brand_maker||'—'}</td><td style="text-align:center;">${item.quantity||1}</td><td>${condBadge}</td><td style="font-size:12px;color:var(--ink-mid);">${item.model_number||'—'}</td><td style="font-size:12px;color:var(--ink-mid);">${item.serial_number||'—'}</td><td style="font-size:12px;">${item.replacement_value_each?'$'+Number(item.replacement_value_each).toLocaleString():'—'}</td><td>${statBadge}</td><td><button class="btn-edit" onclick="openEditItem('${item.id}')">Edit</button></td>`;
+
+    const attachments=item.attachments||[];
+    let thumbHtml='<span style="color:var(--ink-soft);font-size:11px;">—</span>';
+    if(attachments.length>0){
+      const shown=attachments.slice(0,3);
+      const extra=attachments.length-3;
+      thumbHtml='<div class="thumb-strip">';
+      shown.forEach(fname=>{
+        const url=attachmentUrl(item.id,fname);
+        if(isImage(fname)){
+          thumbHtml+=`<img class="thumb" src="${url}" alt="${fname}" title="${fname}" onclick="event.stopPropagation();openLightbox('${url}')">`;
+        } else {
+          thumbHtml+=`<div class="thumb-pdf" title="${fname}" onclick="event.stopPropagation();window.open('${url}','_blank')">PDF</div>`;
+        }
+      });
+      if(extra>0) thumbHtml+=`<span class="thumb-more">+${extra}</span>`;
+      thumbHtml+='</div>';
+    }
+
+    tr.innerHTML=`<td class="td-flag">${item.appraisal_flag?'⚑':''}</td><td>${thumbHtml}</td><td style="color:var(--ink-soft);font-size:12px;">${item.room||'—'}</td><td class="td-desc" title="${(item.item_description||'').replace(/"/g,"'")}">${item.item_description||'—'}</td><td style="color:var(--ink-mid);font-size:12px;">${item.brand_maker||'—'}</td><td style="text-align:center;">${item.quantity||1}</td><td>${condBadge}</td><td style="font-size:12px;color:var(--ink-mid);">${item.model_number||'—'}</td><td style="font-size:12px;color:var(--ink-mid);">${item.serial_number||'—'}</td><td style="font-size:12px;">${item.replacement_value_each?'$'+Number(item.replacement_value_each).toLocaleString():'—'}</td><td>${statBadge}</td><td><button class="btn-edit" onclick="openEditItem('${item.id}')">Edit</button></td>`;
     tbody.appendChild(tr);
   });
 }
 
-// ── Modal ──
-function openNewItem() {
-  editingItemId=null;
+// Lightbox
+function openLightbox(url){document.getElementById('lightbox-img').src=url;document.getElementById('lightbox').classList.add('open');}
+function closeLightbox(){document.getElementById('lightbox').classList.remove('open');document.getElementById('lightbox-img').src='';}
+
+// File upload
+function handleDragOver(e){e.preventDefault();document.getElementById('upload-area').classList.add('dragover');}
+function handleDragLeave(){document.getElementById('upload-area').classList.remove('dragover');}
+function handleDrop(e){e.preventDefault();document.getElementById('upload-area').classList.remove('dragover');Array.from(e.dataTransfer.files).filter(isValidFile).forEach(addPendingFile);}
+function handleFileSelect(e){Array.from(e.target.files).filter(isValidFile).forEach(addPendingFile);e.target.value='';}
+function isValidFile(f){return f.type.startsWith('image/')||f.type==='application/pdf'||/\.(heic|heif)$/i.test(f.name);}
+
+function addPendingFile(file){
+  if(pendingFiles.find(f=>f.name===file.name))return;
+  pendingFiles.push(file);
+  renderPendingUploads();
+}
+function removePendingFile(name){pendingFiles=pendingFiles.filter(f=>f.name!==name);renderPendingUploads();}
+function renderPendingUploads(){
+  const el=document.getElementById('pending-uploads');
+  if(pendingFiles.length===0){el.innerHTML='';return;}
+  el.innerHTML=pendingFiles.map(f=>`<div class="pending-file"><span class="pending-file-name">${f.type.startsWith('image/')?'🖼 ':'📄 '}${f.name}</span><button class="pending-file-remove" onclick="removePendingFile('${f.name.replace(/'/g,"\\'")}')">✕</button></div>`).join('');
+}
+
+function renderExistingAttachments(item){
+  const grid=document.getElementById('existing-attachments');
+  const attachments=item?.attachments||[];
+  if(attachments.length===0){grid.innerHTML='';return;}
+  grid.innerHTML=attachments.map(fname=>{
+    const url=attachmentUrl(item.id,fname);
+    const short=fname.length>20?fname.substring(0,18)+'…':fname;
+    if(isImage(fname)){
+      return `<div class="attachment-item"><img src="${url}" alt="${fname}" onclick="openLightbox('${url}')"><div class="attachment-name">${short}</div><button class="attachment-delete" onclick="markForDeletion('${fname.replace(/'/g,"\\'")}',this)" title="Remove">✕</button></div>`;
+    } else {
+      return `<div class="attachment-item"><div class="attachment-pdf" onclick="window.open('${url}','_blank')"><span>📄</span><span>PDF</span></div><div class="attachment-name">${short}</div><button class="attachment-delete" onclick="markForDeletion('${fname.replace(/'/g,"\\'")}',this)" title="Remove">✕</button></div>`;
+    }
+  }).join('');
+}
+
+function markForDeletion(fname,btn){
+  filesToDelete.push(fname);
+  btn.closest('.attachment-item').style.opacity='0.3';
+  btn.textContent='↩';
+  btn.onclick=()=>unmarkForDeletion(fname,btn);
+}
+function unmarkForDeletion(fname,btn){
+  filesToDelete=filesToDelete.filter(f=>f!==fname);
+  btn.closest('.attachment-item').style.opacity='1';
+  btn.textContent='✕';
+  btn.onclick=()=>markForDeletion(fname,btn);
+}
+
+// Modal
+function openNewItem(){
+  editingItemId=null;pendingFiles=[];filesToDelete=[];
   document.getElementById('modal-title').textContent='New Item';
   clearModal();
+  document.getElementById('existing-attachments').innerHTML='';
+  renderPendingUploads();
   document.getElementById('item-modal').classList.add('open');
 }
 
-function openEditItem(id) {
-  const item=allItems.find(i=>i.id===id); if(!item) return;
-  editingItemId=id;
+function openEditItem(id){
+  const item=allItems.find(i=>i.id===id);if(!item)return;
+  editingItemId=id;pendingFiles=[];filesToDelete=[];
   document.getElementById('modal-title').textContent=item.item_description||'Edit Item';
   document.getElementById('f-desc').value=item.item_description||'';
   document.getElementById('f-brand').value=item.brand_maker||'';
@@ -947,10 +610,12 @@ function openEditItem(id) {
   document.getElementById('f-depr-pct').value=item.depreciation_pct||'';
   document.getElementById('f-notes').value=item.notes||'';
   document.getElementById('save-status').textContent='';
+  renderExistingAttachments(item);
+  renderPendingUploads();
   document.getElementById('item-modal').classList.add('open');
 }
 
-function clearModal() {
+function clearModal(){
   ['f-desc','f-brand','f-room','f-model','f-serial','f-photos','f-retailer','f-repl-source','f-notes','f-depr-cat'].forEach(id=>document.getElementById(id).value='');
   ['f-disposition','f-condition'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-qty').value=1;
@@ -960,85 +625,66 @@ function clearModal() {
   document.getElementById('save-status').textContent='';
 }
 
-function closeModal() { document.getElementById('item-modal').classList.remove('open'); editingItemId=null; }
+function closeModal(){document.getElementById('item-modal').classList.remove('open');editingItemId=null;pendingFiles=[];filesToDelete=[];}
 
-async function saveItem() {
+async function saveItem(){
   const statusEl=document.getElementById('save-status');
-  statusEl.textContent='Saving…'; statusEl.className='save-status';
-  const payload={
-    engagement_id:currentEngagement.id,
-    item_description:document.getElementById('f-desc').value.trim(),
-    brand_maker:document.getElementById('f-brand').value.trim(),
-    room:document.getElementById('f-room').value.trim().toUpperCase(),
-    disposition:document.getElementById('f-disposition').value,
-    condition:document.getElementById('f-condition').value,
-    quantity:parseInt(document.getElementById('f-qty').value)||1,
-    status:document.getElementById('f-status').value,
-    model_number:document.getElementById('f-model').value.trim(),
-    serial_number:document.getElementById('f-serial').value.trim(),
-    photo_files:document.getElementById('f-photos').value.trim(),
-    appraisal_flag:document.getElementById('f-flag').value==='true',
-    retailer:document.getElementById('f-retailer').value.trim(),
-    replacement_source:document.getElementById('f-repl-source').value.trim(),
-    purchase_price_each:parseFloat(document.getElementById('f-purchase').value)||null,
-    replacement_value_each:parseFloat(document.getElementById('f-repl-value').value)||null,
-    depreciation_category:document.getElementById('f-depr-cat').value.trim(),
-    depreciation_pct:parseFloat(document.getElementById('f-depr-pct').value)||null,
-    notes:document.getElementById('f-notes').value.trim(),
-  };
-  if(!payload.item_description){statusEl.textContent='Item description is required.';statusEl.className='save-status error';return;}
+  statusEl.textContent='Saving…';statusEl.className='save-status';
+
+  if(!document.getElementById('f-desc').value.trim()){
+    statusEl.textContent='Item description is required.';statusEl.className='save-status error';return;
+  }
+
+  const fd=new FormData();
+  fd.append('engagement_id',currentEngagement.id);
+  fd.append('item_description',document.getElementById('f-desc').value.trim());
+  fd.append('brand_maker',document.getElementById('f-brand').value.trim());
+  fd.append('room',document.getElementById('f-room').value.trim().toUpperCase());
+  fd.append('disposition',document.getElementById('f-disposition').value);
+  fd.append('condition',document.getElementById('f-condition').value);
+  fd.append('quantity',parseInt(document.getElementById('f-qty').value)||1);
+  fd.append('status',document.getElementById('f-status').value);
+  fd.append('model_number',document.getElementById('f-model').value.trim());
+  fd.append('serial_number',document.getElementById('f-serial').value.trim());
+  fd.append('photo_files',document.getElementById('f-photos').value.trim());
+  fd.append('appraisal_flag',document.getElementById('f-flag').value==='true');
+  fd.append('retailer',document.getElementById('f-retailer').value.trim());
+  fd.append('replacement_source',document.getElementById('f-repl-source').value.trim());
+  const pp=parseFloat(document.getElementById('f-purchase').value);
+  if(!isNaN(pp))fd.append('purchase_price_each',pp);
+  const rv=parseFloat(document.getElementById('f-repl-value').value);
+  if(!isNaN(rv))fd.append('replacement_value_each',rv);
+  fd.append('depreciation_category',document.getElementById('f-depr-cat').value.trim());
+  const dp=parseFloat(document.getElementById('f-depr-pct').value);
+  if(!isNaN(dp))fd.append('depreciation_pct',dp);
+  fd.append('notes',document.getElementById('f-notes').value.trim());
+
+  // New file uploads
+  pendingFiles.forEach(f=>fd.append('attachments',f,f.name));
+  // Files to delete
+  filesToDelete.forEach(fname=>fd.append('attachments-',fname));
+
   try {
     const url=editingItemId?`${POCKETBASE_URL}/api/collections/items/records/${editingItemId}`:`${POCKETBASE_URL}/api/collections/items/records`;
-    const res=await fetch(url,{method:editingItemId?'PATCH':'POST',headers:{'Content-Type':'application/json','Authorization':authToken},body:JSON.stringify(payload)});
+    const res=await fetch(url,{method:editingItemId?'PATCH':'POST',headers:{'Authorization':authToken},body:fd});
     const data=await res.json();
     if(!res.ok) throw new Error(data.message||'Save failed');
-    statusEl.textContent='✓ Saved'; statusEl.className='save-status success';
-    await loadItems(); setTimeout(closeModal,700);
+    statusEl.textContent='✓ Saved';statusEl.className='save-status success';
+    pendingFiles=[];filesToDelete=[];
+    await loadItems();
+    setTimeout(closeModal,700);
   } catch(e){statusEl.textContent='✗ '+e.message;statusEl.className='save-status error';}
 }
 
-// ── CSV Export ──
-function exportCSV() {
-  const cols = [
-    'Room','Photo','Item Description','Brand / Maker','Disposition','Condition',
-    'Quantity','Data Tag Photo','Model #','Serial #','Receipt Photo','Retailer',
-    'Replacement Source','Purchase Price (each)','Purchase Price (total)',
-    'Age (yrs / mos)','Replacement Value (each)','Replacement Value (total)',
-    'Depreciation Category','Depreciation %','Depreciation Amount',
-    'Actual Cash Value (each)','Actual Cash Value (total)'
-  ];
-  const rows = allItems.map(i => {
-    const desc = (i.appraisal_flag ? '⚑ ' : '') + (i.item_description || '') + (i.notes ? ' | ' + i.notes : '');
-    return [
-      i.room || '',
-      i.photo_files || '',
-      desc,
-      i.brand_maker || '',
-      i.disposition || '',
-      i.condition || '',
-      i.quantity || 1,
-      '','','','',
-      i.retailer || '',
-      i.replacement_source || '',
-      i.purchase_price_each || '',
-      (i.purchase_price_each && i.quantity) ? (i.purchase_price_each * i.quantity).toFixed(2) : '',
-      '',
-      i.replacement_value_each || '',
-      (i.replacement_value_each && i.quantity) ? (i.replacement_value_each * i.quantity).toFixed(2) : '',
-      i.depreciation_category || '',
-      i.depreciation_pct ? (i.depreciation_pct / 100).toFixed(4) : '',
-      '','',''
-    ];
-  });
-  const csv = [cols, ...rows].map(r =>
-    r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')
-  ).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href     = url;
-  a.download = `Held_${currentEngagement.client_code}_Inventory_${new Date().toISOString().split('T')[0]}.csv`;
-  a.click();
+// CSV Export
+function exportCSV(){
+  const cols=['Room','Photo','Item Description','Brand / Maker','Disposition','Condition','Quantity','Data Tag Photo','Model #','Serial #','Receipt Photo','Retailer','Replacement Source','Purchase Price (each)','Purchase Price (total)','Age (yrs / mos)','Replacement Value (each)','Replacement Value (total)','Depreciation Category','Depreciation %','Depreciation Amount','Actual Cash Value (each)','Actual Cash Value (total)','Notes','Appraisal Flag','Attachments'];
+  const rows=allItems.map(i=>[i.room||'',i.photo_files||'',i.item_description||'',i.brand_maker||'',i.disposition||'',i.condition||'',i.quantity||1,'','','','',i.retailer||'',i.replacement_source||'',i.purchase_price_each||'',(i.purchase_price_each&&i.quantity)?(i.purchase_price_each*i.quantity).toFixed(2):'','',i.replacement_value_each||'',(i.replacement_value_each&&i.quantity)?(i.replacement_value_each*i.quantity).toFixed(2):'',i.depreciation_category||'',i.depreciation_pct?(i.depreciation_pct/100).toFixed(4):'',' ','','',i.notes||'',i.appraisal_flag?'YES':'',(i.attachments||[]).join('; ')]);
+  const csv=[cols,...rows].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`Held_${currentEngagement.client_code}_Inventory_${new Date().toISOString().split('T')[0]}.csv`;a.click();
   URL.revokeObjectURL(url);
 }
 </script>
