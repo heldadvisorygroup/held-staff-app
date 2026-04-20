@@ -337,7 +337,7 @@
         <div class="form-grid">
           <div class="form-group"><label>Model #</label><input type="text" id="f-model"></div>
           <div class="form-group"><label>Serial #</label><input type="text" id="f-serial"></div>
-          <div class="form-group span-2"><label>Photo Files (comma-separated filenames)</label><input type="text" id="f-photos" placeholder="Held-2026-0001_PLR_001_wide_01.JPG, …"></div>
+          <div class="form-group span-2"><label>Photo Files (comma-separated filenames)</label><input type="text" id="f-photos" placeholder="Held-2026-0001_PLR_001_wide_01.JPG, …"><div style="font-size:10px;color:var(--ink-soft);margin-top:5px;font-style:italic;">Reference filenames only — upload the actual photos in the Attachments section below</div></div>
           <div class="form-group">
             <label>Appraisal Recommended</label>
             <select id="f-flag"><option value="false">No</option><option value="true">Yes — flag for appraisal</option></select>
@@ -347,13 +347,14 @@
 
       <div class="modal-section">
         <div class="modal-section-title">Attachments — Photos, Invoices &amp; Appraisals</div>
+        <p style="font-size:12px;color:var(--ink-mid);margin-bottom:12px;font-style:italic;">Upload the reference photos for this item from your shared Proton Drive folder, plus any invoices, appraisals, or receipts as PDFs. These will be stored with the item record and visible as thumbnails in the inventory list.</p>
         <div id="existing-attachments" class="attachment-grid"></div>
         <div class="upload-area" id="upload-area"
              ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
           <input type="file" id="f-attachments" multiple accept="image/*,.pdf" onchange="handleFileSelect(event)">
           <div class="upload-area-text">
             <strong>Drag &amp; drop</strong> or click to upload<br>
-            <span style="font-size:11px;color:var(--ink-soft);">Photos (JPG, PNG, HEIC) and PDFs — invoices, appraisals, receipts</span>
+            <span style="font-size:11px;color:var(--ink-soft);">Upload reference photos from your Proton Drive folder for this engagement, plus any PDFs — invoices, appraisals, receipts</span>
           </div>
         </div>
         <div id="pending-uploads"></div>
