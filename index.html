@@ -22,9 +22,7 @@
     --font-display: 'Young Serif', Georgia, serif;
     --font-body:    'Bitter', Georgia, serif;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
     font-family: var(--font-body);
     background: var(--bg);
@@ -33,7 +31,6 @@
     font-size: 14px;
     font-weight: 300;
   }
-
   #login-screen {
     min-height: 100vh;
     display: flex;
@@ -42,7 +39,6 @@
     background: var(--bg);
     padding: 24px;
   }
-
   .login-box {
     width: 100%;
     max-width: 420px;
@@ -51,7 +47,6 @@
     padding: 52px 44px 44px;
     position: relative;
   }
-
   .login-box::after {
     content: '';
     position: absolute;
@@ -59,13 +54,10 @@
     height: 3px;
     background: var(--lime);
   }
-
   .login-logo { font-family: var(--font-display); font-size: 36px; color: var(--ink); margin-bottom: 2px; line-height: 1; }
   .login-sub { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mid); margin-bottom: 40px; font-weight: 400; }
-
   .form-group { margin-bottom: 20px; }
   .form-group label { display: block; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-mid); margin-bottom: 7px; font-weight: 500; }
-
   .form-group input,
   .form-group select,
   .form-group textarea {
@@ -81,14 +73,11 @@
     transition: border-color 0.2s, background 0.2s;
     -webkit-appearance: none;
   }
-
   .form-group input:focus,
   .form-group select:focus,
   .form-group textarea:focus { border-color: var(--teal); background: var(--white); }
-
   .form-group select option { background: var(--bg); }
   .form-group textarea { resize: vertical; min-height: 80px; }
-
   .btn { display: inline-block; padding: 11px 28px; font-family: var(--font-body); font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; border: none; transition: all 0.18s; }
   .btn-primary { background: var(--ink); color: var(--bg); width: 100%; text-align: center; }
   .btn-primary:hover { background: var(--teal); color: var(--white); }
@@ -97,11 +86,8 @@
   .btn-save { background: var(--teal); color: var(--white); padding: 9px 22px; font-size: 11px; }
   .btn-save:hover { background: #6A9A93; }
   .btn-small { padding: 7px 16px; font-size: 10px; }
-
   #login-error { color: #8B3A3A; font-size: 12px; margin-top: 12px; display: none; font-style: italic; }
-
   #app { display: none; min-height: 100vh; }
-
   .app-header { background: var(--ink); padding: 0 32px; height: 54px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
   .header-logo { font-family: var(--font-display); font-size: 22px; color: var(--bg); letter-spacing: 0.02em; }
   .header-right { display: flex; align-items: center; gap: 20px; }
@@ -109,12 +95,10 @@
   .header-code { font-size: 11px; letter-spacing: 0.12em; background: var(--lime); color: var(--ink); padding: 3px 10px; font-weight: 500; }
   .btn-logout { background: none; border: 1px solid rgba(171,173,154,0.4); color: var(--sage); padding: 5px 14px; font-family: var(--font-body); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.18s; }
   .btn-logout:hover { border-color: var(--bg); color: var(--bg); }
-
   #engagement-screen { padding: 52px 36px; max-width: 760px; margin: 0 auto; }
   .screen-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 8px; font-weight: 500; }
   .screen-title { font-family: var(--font-display); font-size: 38px; color: var(--ink); margin-bottom: 36px; line-height: 1.1; }
   .engagement-list { display: flex; flex-direction: column; gap: 10px; }
-
   .engagement-card { background: var(--white); border: 1px solid var(--border); padding: 20px 24px; cursor: pointer; transition: all 0.18s; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
   .engagement-card:hover { border-color: var(--teal); background: var(--bg-card); transform: translateX(3px); }
   .engagement-code { font-family: var(--font-display); font-size: 18px; color: var(--ink); margin-bottom: 3px; }
@@ -124,7 +108,6 @@
   .status-review   { background: rgba(237,252,78,0.25); color: #5A6000; }
   .status-complete { background: rgba(71,72,56,0.1);    color: var(--ink-mid); }
   .status-archived { background: rgba(71,72,56,0.06);   color: var(--ink-soft); }
-
   #items-screen { padding: 32px 32px 96px; }
   .items-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; }
   .items-header-left { display: flex; align-items: center; gap: 14px; }
@@ -135,7 +118,6 @@
   .filter-select { background: var(--white); border: 1px solid var(--border-strong); color: var(--ink); padding: 7px 12px; font-family: var(--font-body); font-size: 12px; font-weight: 300; outline: none; cursor: pointer; -webkit-appearance: none; }
   .btn-add { background: var(--lime); border: none; color: var(--ink); padding: 8px 18px; font-family: var(--font-body); font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.18s; }
   .btn-add:hover { background: #d8ec30; }
-
   .items-table-wrap { overflow-x: auto; border: 1px solid var(--border); background: var(--white); }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   thead th { background: var(--ink); color: var(--sage); font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; padding: 11px 13px; text-align: left; white-space: nowrap; font-weight: 400; }
@@ -146,34 +128,28 @@
   tbody td { padding: 10px 13px; color: var(--ink); vertical-align: middle; }
   .td-desc { max-width: 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 400; }
   .td-flag { color: #8B3A3A; font-size: 13px; }
-
   .thumb-strip { display: flex; gap: 4px; align-items: center; }
   .thumb { width: 36px; height: 36px; object-fit: cover; border: 1px solid var(--border); cursor: pointer; transition: transform 0.15s; flex-shrink: 0; }
   .thumb:hover { transform: scale(1.08); border-color: var(--teal); }
   .thumb-pdf { width: 36px; height: 36px; background: rgba(139,58,58,0.1); border: 1px solid rgba(139,58,58,0.3); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 500; color: #8B3A3A; letter-spacing: 0.05em; cursor: pointer; flex-shrink: 0; transition: background 0.15s; }
   .thumb-pdf:hover { background: rgba(139,58,58,0.18); }
   .thumb-more { font-size: 10px; color: var(--ink-soft); white-space: nowrap; }
-
   .badge { display: inline-block; padding: 2px 8px; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
   .badge-excellent { background: rgba(134,175,168,0.2); color: #2D6B63; }
   .badge-good      { background: rgba(237,252,78,0.3);  color: #4A5200; }
   .badge-fair      { background: rgba(171,173,154,0.3); color: var(--ink-mid); }
   .badge-draft     { background: rgba(71,72,56,0.08);   color: var(--ink-soft); }
   .badge-complete  { background: rgba(134,175,168,0.2); color: #2D6B63; }
-
   .btn-edit { background: none; border: 1px solid var(--border); color: var(--ink-mid); padding: 4px 12px; font-family: var(--font-body); font-size: 10px; letter-spacing: 0.08em; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
   .btn-edit:hover { border-color: var(--teal); color: var(--teal); }
-
   .empty-state { text-align: center; padding: 72px 32px; color: var(--ink-soft); font-style: italic; }
   .empty-state h3 { font-family: var(--font-display); font-size: 26px; font-weight: 400; margin-bottom: 8px; color: var(--ink); }
   .loading { text-align: center; padding: 60px; color: var(--ink-soft); font-size: 12px; letter-spacing: 0.08em; font-style: italic; }
-
   .export-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--ink); padding: 13px 32px; display: flex; align-items: center; justify-content: space-between; z-index: 50; gap: 16px; }
   .export-info { font-size: 12px; color: var(--sage); letter-spacing: 0.04em; }
   .export-info strong { color: var(--bg); }
   .btn-export { background: var(--lime); color: var(--ink); border: none; padding: 9px 22px; font-family: var(--font-body); font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: background 0.18s; flex-shrink: 0; }
   .btn-export:hover { background: #d8ec30; }
-
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(71,72,56,0.55); z-index: 200; align-items: flex-start; justify-content: center; padding: 32px 16px; overflow-y: auto; }
   .modal-overlay.open { display: flex; }
   .modal { background: var(--white); border: 1px solid var(--border-strong); width: 100%; max-width: 700px; position: relative; }
@@ -191,14 +167,11 @@
   .save-status { font-size: 12px; color: var(--ink-soft); font-style: italic; }
   .save-status.success { color: #2D6B63; }
   .save-status.error   { color: #8B3A3A; }
-
-  /* ── Attachments ── */
   .upload-area { border: 2px dashed var(--border-strong); padding: 20px; text-align: center; cursor: pointer; transition: all 0.18s; background: var(--bg); position: relative; }
   .upload-area:hover, .upload-area.dragover { border-color: var(--teal); background: rgba(134,175,168,0.06); }
   .upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
   .upload-area-text { font-size: 12px; color: var(--ink-mid); pointer-events: none; }
   .upload-area-text strong { color: var(--teal); }
-
   .attachment-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; margin-bottom: 12px; }
   .attachment-item { position: relative; border: 1px solid var(--border); background: var(--bg-card); overflow: hidden; }
   .attachment-item img { width: 100%; height: 80px; object-fit: cover; display: block; cursor: pointer; }
@@ -208,19 +181,15 @@
   .attachment-name { font-size: 9px; color: var(--ink-soft); padding: 4px 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .attachment-delete { position: absolute; top: 3px; right: 3px; background: rgba(139,58,58,0.85); color: white; border: none; width: 18px; height: 18px; border-radius: 50%; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; opacity: 0; transition: opacity 0.15s; }
   .attachment-item:hover .attachment-delete { opacity: 1; }
-
   .pending-file { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: rgba(134,175,168,0.1); border: 1px solid rgba(134,175,168,0.3); margin-bottom: 4px; font-size: 12px; }
   .pending-file-name { color: var(--ink-mid); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .pending-file-remove { background: none; border: none; color: var(--ink-soft); cursor: pointer; font-size: 14px; padding: 0 4px; flex-shrink: 0; }
   .pending-file-remove:hover { color: #8B3A3A; }
-
-  /* ── Lightbox ── */
   #lightbox { display: none; position: fixed; inset: 0; background: rgba(30,30,20,0.92); z-index: 500; align-items: center; justify-content: center; padding: 40px; }
   #lightbox.open { display: flex; }
   #lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
   #lightbox-close { position: absolute; top: 20px; right: 24px; background: none; border: none; color: white; font-size: 28px; cursor: pointer; opacity: 0.7; transition: opacity 0.15s; }
   #lightbox-close:hover { opacity: 1; }
-
   @media (max-width: 640px) {
     .form-grid { grid-template-columns: 1fr; }
     .form-grid .span-2 { grid-column: span 1; }
@@ -231,7 +200,6 @@
 </style>
 </head>
 <body>
-
 <script>
   const POCKETBASE_URL = 'https://db.heldadvisorygroup.com';
 </script>
@@ -286,7 +254,7 @@
         <thead>
           <tr>
             <th>⚑</th><th>Attachments</th><th>Room</th><th>Description</th>
-            <th>Brand</th><th>Qty</th><th>Condition</th><th>Model #</th>
+            <th>Brand</th><th>Qty</th><th>Age (yrs)</th><th>Condition</th><th>Model #</th>
             <th>Serial #</th><th>Repl. Value</th><th>Status</th><th></th>
           </tr>
         </thead>
@@ -333,15 +301,20 @@
       </div>
 
       <div class="modal-section">
-        <div class="modal-section-title">Identification</div>
+        <div class="modal-section-title">Identification &amp; Age</div>
         <div class="form-grid">
           <div class="form-group"><label>Model #</label><input type="text" id="f-model"></div>
           <div class="form-group"><label>Serial #</label><input type="text" id="f-serial"></div>
-          <div class="form-group span-2"><label>Photo Files (comma-separated filenames)</label><input type="text" id="f-photos" placeholder="Held-2026-0001_PLR_001_wide_01.JPG, …"><div style="font-size:10px;color:var(--ink-soft);margin-top:5px;font-style:italic;">Reference filenames only — upload the actual photos in the Attachments section below</div></div>
+          <div class="form-group">
+            <label>Age (years)</label>
+            <input type="number" id="f-age" step="0.5" min="0" placeholder="e.g. 2.5 = 2 yrs 6 mos">
+            <div style="font-size:10px;color:var(--ink-soft);margin-top:5px;font-style:italic;">Used to calculate depreciation in the Excel export</div>
+          </div>
           <div class="form-group">
             <label>Appraisal Recommended</label>
             <select id="f-flag"><option value="false">No</option><option value="true">Yes — flag for appraisal</option></select>
           </div>
+          <div class="form-group span-2"><label>Photo Files (reference filenames)</label><input type="text" id="f-photos" placeholder="Held-2026-0001_PLR_001_wide_01.JPG, …"><div style="font-size:10px;color:var(--ink-soft);margin-top:5px;font-style:italic;">Reference filenames only — upload actual photos in the Attachments section below</div></div>
         </div>
       </div>
 
@@ -466,14 +439,14 @@ function showEngagements() {
 // Items
 async function loadItems() {
   const tbody=document.getElementById('items-tbody');
-  tbody.innerHTML='<tr><td colspan="12" class="loading">Loading items…</td></tr>';
+  tbody.innerHTML='<tr><td colspan="13" class="loading">Loading items…</td></tr>';
   try {
     const res=await fetch(`${POCKETBASE_URL}/api/collections/items/records?filter=(engagement_id='${currentEngagement.id}')&perPage=500&sort=room,item_description`,{headers:{'Authorization':authToken}});
     const data=await res.json();
     allItems=data.items||[];
     document.getElementById('export-count').textContent=allItems.length;
     populateRoomFilter();renderItems(allItems);
-  } catch(e){tbody.innerHTML=`<tr><td colspan="12" style="padding:24px;color:#8B3A3A;font-style:italic;">${e.message}</td></tr>`;}
+  } catch(e){tbody.innerHTML=`<tr><td colspan="13" style="padding:24px;color:#8B3A3A;font-style:italic;">${e.message}</td></tr>`;}
 }
 
 function populateRoomFilter() {
@@ -496,14 +469,13 @@ function isImage(f){return /\.(jpg|jpeg|png|gif|webp|heic|heif)$/i.test(f);}
 
 function renderItems(items) {
   const tbody=document.getElementById('items-tbody');
-  if(items.length===0){tbody.innerHTML='<tr><td colspan="12" class="empty-state" style="padding:52px;font-style:italic;color:var(--ink-soft);">No items found. Use "+ Add Item" to begin.</td></tr>';return;}
+  if(items.length===0){tbody.innerHTML='<tr><td colspan="13" class="empty-state" style="padding:52px;font-style:italic;color:var(--ink-soft);">No items found. Use "+ Add Item" to begin.</td></tr>';return;}
   tbody.innerHTML='';
   items.forEach(item=>{
     const tr=document.createElement('tr');
     if(item.appraisal_flag) tr.classList.add('flagged');
     const condBadge=item.condition?`<span class="badge badge-${item.condition.toLowerCase()}">${item.condition}</span>`:'<span style="color:var(--ink-soft)">—</span>';
     const statBadge=item.status?`<span class="badge badge-${item.status}">${item.status}</span>`:'<span style="color:var(--ink-soft)">—</span>';
-
     const photoFiles=Array.isArray(item.photo_files)?item.photo_files:(item.photo_files?[item.photo_files]:[]);
     const attachments=[...photoFiles,...(item.attachments||[])];
     let thumbHtml='<span style="color:var(--ink-soft);font-size:11px;">—</span>';
@@ -522,8 +494,8 @@ function renderItems(items) {
       if(extra>0) thumbHtml+=`<span class="thumb-more">+${extra}</span>`;
       thumbHtml+='</div>';
     }
-
-    tr.innerHTML=`<td class="td-flag">${item.appraisal_flag?'⚑':''}</td><td>${thumbHtml}</td><td style="color:var(--ink-soft);font-size:12px;">${item.room||'—'}</td><td class="td-desc" title="${(item.item_description||'').replace(/"/g,"'")}">${item.item_description||'—'}</td><td style="color:var(--ink-mid);font-size:12px;">${item.brand_maker||'—'}</td><td style="text-align:center;">${item.quantity||1}</td><td>${condBadge}</td><td style="font-size:12px;color:var(--ink-mid);">${item.model_number||'—'}</td><td style="font-size:12px;color:var(--ink-mid);">${item.serial_number||'—'}</td><td style="font-size:12px;">${item.replacement_value_each?'$'+Number(item.replacement_value_each).toLocaleString():'—'}</td><td>${statBadge}</td><td><button class="btn-edit" onclick="openEditItem('${item.id}')">Edit</button></td>`;
+    const ageBadge=item.age_years!=null?`${item.age_years} yr`:'—';
+    tr.innerHTML=`<td class="td-flag">${item.appraisal_flag?'⚑':''}</td><td>${thumbHtml}</td><td style="color:var(--ink-soft);font-size:12px;">${item.room||'—'}</td><td class="td-desc" title="${(item.item_description||'').replace(/"/g,"'")}">${item.item_description||'—'}</td><td style="color:var(--ink-mid);font-size:12px;">${item.brand_maker||'—'}</td><td style="text-align:center;">${item.quantity||1}</td><td style="text-align:center;font-size:12px;color:var(--ink-mid);">${ageBadge}</td><td>${condBadge}</td><td style="font-size:12px;color:var(--ink-mid);">${item.model_number||'—'}</td><td style="font-size:12px;color:var(--ink-mid);">${item.serial_number||'—'}</td><td style="font-size:12px;">${item.replacement_value_each?'$'+Number(item.replacement_value_each).toLocaleString():'—'}</td><td>${statBadge}</td><td><button class="btn-edit" onclick="openEditItem('${item.id}')">Edit</button></td>`;
     tbody.appendChild(tr);
   });
 }
@@ -538,7 +510,6 @@ function handleDragLeave(){document.getElementById('upload-area').classList.remo
 function handleDrop(e){e.preventDefault();document.getElementById('upload-area').classList.remove('dragover');Array.from(e.dataTransfer.files).filter(isValidFile).forEach(addPendingFile);}
 function handleFileSelect(e){Array.from(e.target.files).filter(isValidFile).forEach(addPendingFile);e.target.value='';}
 function isValidFile(f){return f.type.startsWith('image/')||f.type==='application/pdf'||/\.(heic|heif)$/i.test(f.name);}
-
 function addPendingFile(file){
   if(pendingFiles.find(f=>f.name===file.name))return;
   pendingFiles.push(file);
@@ -550,7 +521,6 @@ function renderPendingUploads(){
   if(pendingFiles.length===0){el.innerHTML='';return;}
   el.innerHTML=pendingFiles.map(f=>`<div class="pending-file"><span class="pending-file-name">${f.type.startsWith('image/')?'🖼 ':'📄 '}${f.name}</span><button class="pending-file-remove" onclick="removePendingFile('${f.name.replace(/'/g,"\\'")}')">✕</button></div>`).join('');
 }
-
 function renderExistingAttachments(item){
   const grid=document.getElementById('existing-attachments');
   const attachments=item?.attachments||[];
@@ -565,7 +535,6 @@ function renderExistingAttachments(item){
     }
   }).join('');
 }
-
 function markForDeletion(fname,btn){
   filesToDelete.push(fname);
   btn.closest('.attachment-item').style.opacity='0.3';
@@ -588,7 +557,6 @@ function openNewItem(){
   renderPendingUploads();
   document.getElementById('item-modal').classList.add('open');
 }
-
 function openEditItem(id){
   const item=allItems.find(i=>i.id===id);if(!item)return;
   editingItemId=id;pendingFiles=[];filesToDelete=[];
@@ -602,6 +570,7 @@ function openEditItem(id){
   document.getElementById('f-status').value=item.status||'draft';
   document.getElementById('f-model').value=item.model_number||'';
   document.getElementById('f-serial').value=item.serial_number||'';
+  document.getElementById('f-age').value=item.age_years!=null?item.age_years:'';
   document.getElementById('f-photos').value=item.photo_files||'';
   document.getElementById('f-flag').value=item.appraisal_flag?'true':'false';
   document.getElementById('f-retailer').value=item.retailer||'';
@@ -616,9 +585,8 @@ function openEditItem(id){
   renderPendingUploads();
   document.getElementById('item-modal').classList.add('open');
 }
-
 function clearModal(){
-  ['f-desc','f-brand','f-room','f-model','f-serial','f-photos','f-retailer','f-repl-source','f-notes','f-depr-cat'].forEach(id=>document.getElementById(id).value='');
+  ['f-desc','f-brand','f-room','f-model','f-serial','f-age','f-photos','f-retailer','f-repl-source','f-notes','f-depr-cat'].forEach(id=>document.getElementById(id).value='');
   ['f-disposition','f-condition'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-qty').value=1;
   document.getElementById('f-status').value='draft';
@@ -626,17 +594,14 @@ function clearModal(){
   ['f-purchase','f-repl-value','f-depr-pct'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('save-status').textContent='';
 }
-
 function closeModal(){document.getElementById('item-modal').classList.remove('open');editingItemId=null;pendingFiles=[];filesToDelete=[];}
 
 async function saveItem(){
   const statusEl=document.getElementById('save-status');
   statusEl.textContent='Saving…';statusEl.className='save-status';
-
   if(!document.getElementById('f-desc').value.trim()){
     statusEl.textContent='Item description is required.';statusEl.className='save-status error';return;
   }
-
   const fd=new FormData();
   fd.append('engagement_id',currentEngagement.id);
   fd.append('item_description',document.getElementById('f-desc').value.trim());
@@ -659,13 +624,11 @@ async function saveItem(){
   fd.append('depreciation_category',document.getElementById('f-depr-cat').value.trim());
   const dp=parseFloat(document.getElementById('f-depr-pct').value);
   if(!isNaN(dp))fd.append('depreciation_pct',dp);
+  const age=parseFloat(document.getElementById('f-age').value);
+  if(!isNaN(age))fd.append('age_years',age);
   fd.append('notes',document.getElementById('f-notes').value.trim());
-
-  // New file uploads
   pendingFiles.forEach(f=>fd.append('attachments',f,f.name));
-  // Files to delete
   filesToDelete.forEach(fname=>fd.append('attachments-',fname));
-
   try {
     const url=editingItemId?`${POCKETBASE_URL}/api/collections/items/records/${editingItemId}`:`${POCKETBASE_URL}/api/collections/items/records`;
     const res=await fetch(url,{method:editingItemId?'PATCH':'POST',headers:{'Authorization':authToken},body:fd});
@@ -680,8 +643,18 @@ async function saveItem(){
 
 // CSV Export
 function exportCSV(){
-  const cols=['Room','Photo','Item Description','Brand / Maker','Disposition','Condition','Quantity','Data Tag Photo','Model #','Serial #','Receipt Photo','Retailer','Replacement Source','Purchase Price (each)','Purchase Price (total)','Age (yrs / mos)','Replacement Value (each)','Replacement Value (total)','Depreciation Category','Depreciation %','Depreciation Amount','Actual Cash Value (each)','Actual Cash Value (total)','Notes','Appraisal Flag','Attachments'];
-  const rows=allItems.map(i=>[i.room||'',i.photo_files||'',i.item_description||'',i.brand_maker||'',i.disposition||'',i.condition||'',i.quantity||1,'','','','',i.retailer||'',i.replacement_source||'',i.purchase_price_each||'',(i.purchase_price_each&&i.quantity)?(i.purchase_price_each*i.quantity).toFixed(2):'','',i.replacement_value_each||'',(i.replacement_value_each&&i.quantity)?(i.replacement_value_each*i.quantity).toFixed(2):'',i.depreciation_category||'',i.depreciation_pct?(i.depreciation_pct/100).toFixed(4):'',' ','','',i.notes||'',i.appraisal_flag?'YES':'',(i.attachments||[]).join('; ')]);
+  const cols=['Room','Photo','Item Description','Brand / Maker','Disposition','Condition','Quantity','Age (years)','Model #','Serial #','Retailer','Replacement Source','Purchase Price (each)','Purchase Price (total)','Replacement Value (each)','Replacement Value (total)','Depreciation Category','Depreciation %','Notes','Appraisal Flag','Attachments'];
+  const rows=allItems.map(i=>[
+    i.room||'',i.photo_files||'',i.item_description||'',i.brand_maker||'',
+    i.disposition||'',i.condition||'',i.quantity||1,
+    i.age_years!=null?i.age_years:'',
+    i.model_number||'',i.serial_number||'',
+    i.retailer||'',i.replacement_source||'',
+    i.purchase_price_each||'',(i.purchase_price_each&&i.quantity)?(i.purchase_price_each*i.quantity).toFixed(2):'',
+    i.replacement_value_each||'',(i.replacement_value_each&&i.quantity)?(i.replacement_value_each*i.quantity).toFixed(2):'',
+    i.depreciation_category||'',i.depreciation_pct?(i.depreciation_pct/100).toFixed(4):'',
+    i.notes||'',i.appraisal_flag?'YES':'',(i.attachments||[]).join('; ')
+  ]);
   const csv=[cols,...rows].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
   const blob=new Blob([csv],{type:'text/csv'});
   const url=URL.createObjectURL(blob);
