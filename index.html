@@ -504,7 +504,8 @@ function renderItems(items) {
     const condBadge=item.condition?`<span class="badge badge-${item.condition.toLowerCase()}">${item.condition}</span>`:'<span style="color:var(--ink-soft)">—</span>';
     const statBadge=item.status?`<span class="badge badge-${item.status}">${item.status}</span>`:'<span style="color:var(--ink-soft)">—</span>';
 
-    const attachments=item.attachments||[];
+    const photoFiles=Array.isArray(item.photo_files)?item.photo_files:(item.photo_files?[item.photo_files]:[]);
+    const attachments=[...photoFiles,...(item.attachments||[])];
     let thumbHtml='<span style="color:var(--ink-soft);font-size:11px;">—</span>';
     if(attachments.length>0){
       const shown=attachments.slice(0,3);
