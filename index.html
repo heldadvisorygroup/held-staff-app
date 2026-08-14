@@ -190,6 +190,28 @@
   #lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
   #lightbox-close { position: absolute; top: 20px; right: 24px; background: none; border: none; color: white; font-size: 28px; cursor: pointer; opacity: 0.7; transition: opacity 0.15s; }
   #lightbox-close:hover { opacity: 1; }
+  /* --- QC flags (internal staff notes, separate from client-facing appraisal_flag) --- */
+  .td-qc { text-align: center; width: 40px; }
+  .qc-btn { background: none; border: none; cursor: pointer; font-size: 15px; line-height: 1; padding: 2px 5px; color: var(--sage); position: relative; transition: color 0.15s; }
+  .qc-btn:hover { color: var(--ink); }
+  .qc-btn.has-open { color: #8A7300; }
+  .qc-count { position: absolute; top: -5px; right: -6px; background: var(--lime); color: var(--ink); font-size: 9px; font-weight: 600; min-width: 14px; height: 14px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0 2px; }
+  tbody tr.qc-flagged { background: rgba(237,252,78,0.16); }
+  tbody tr.qc-flagged:hover { background: rgba(237,252,78,0.26); }
+  .qc-popover { position: fixed; z-index: 300; width: 260px; background: var(--white); border: 1px solid var(--border-strong); box-shadow: 0 8px 24px rgba(30,30,20,0.2); padding: 12px; }
+  .qc-popover textarea { width: 100%; min-height: 60px; margin-bottom: 8px; font-family: var(--font-body); font-size: 12px; border: 1px solid var(--border-strong); padding: 6px 8px; resize: vertical; }
+  .qc-popover .qc-popover-row { display: flex; justify-content: flex-end; gap: 8px; }
+  .qc-entry { border: 1px solid var(--border); padding: 10px 12px; margin-bottom: 8px; background: var(--bg-card); }
+  .qc-entry.resolved { opacity: 0.5; }
+  .qc-entry.resolved .qc-note-text { text-decoration: line-through; }
+  .qc-note-text { font-size: 13px; margin-bottom: 6px; color: var(--ink); }
+  .qc-entry-meta { display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--ink-soft); gap: 8px; }
+  .qc-resolve-btn { background: none; border: 1px solid var(--border-strong); color: var(--ink-mid); padding: 3px 10px; font-family: var(--font-body); font-size: 10px; letter-spacing: 0.06em; cursor: pointer; transition: all 0.15s; flex-shrink: 0; }
+  .qc-resolve-btn:hover { border-color: var(--teal); color: var(--teal); }
+  .qc-add-row { display: flex; gap: 8px; margin-top: 10px; }
+  .qc-add-row textarea { flex: 1; min-height: 44px; font-size: 12px; padding: 6px 8px; border: 1px solid var(--border-strong); font-family: var(--font-body); resize: vertical; }
+  .qc-empty { font-size: 12px; color: var(--ink-soft); font-style: italic; margin-bottom: 8px; }
+
   @media (max-width: 640px) {
     .form-grid { grid-template-columns: 1fr; }
     .form-grid .span-2 { grid-column: span 1; }
@@ -246,6 +268,10 @@
           <option value="draft">Draft</option>
           <option value="complete">Complete</option>
         </select>
+        <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink-mid);cursor:pointer;user-select:none;border:1px solid var(--border-strong);padding:6px 10px;background:var(--white);">
+          <input type="checkbox" id="qc-filter" onchange="filterItems()" style="margin:0;">
+          🚩 QC flagged only
+        </label>
         <button class="btn-add" onclick="openNewItem()">+ Add Item</button>
       </div>
     </div>
@@ -253,7 +279,7 @@
       <table>
         <thead>
           <tr>
-            <th>⚑</th><th>Attachments</th><th>Room</th><th>Description</th>
+            <th>⚑</th><th>QC</th><th>Attachments</th><th>Room</th><th>Description</th>
             <th>Brand</th><th>Qty</th><th>Age (yrs)</th><th>Condition</th><th>Model #</th>
             <th>Serial #</th><th>Repl. Value</th><th>Status</th><th></th>
           </tr>
@@ -297,6 +323,15 @@
             <label>Status</label>
             <select id="f-status"><option value="draft">Draft</option><option value="complete">Complete</option></select>
           </div>
+        </div>
+      </div>
+
+      <div class="modal-section" id="qc-section" style="display:none;">
+        <div class="modal-section-title">QC Flags — Internal Staff Notes</div>
+        <div id="qc-thread"></div>
+        <div class="qc-add-row">
+          <textarea id="qc-new-note" placeholder="Flag something for the team…"></textarea>
+          <button class="btn btn-secondary btn-small" onclick="addQcNote()">Add</button>
         </div>
       </div>
 
@@ -368,6 +403,114 @@ const POCKETBASE_URL_JS = 'https://db.heldadvisorygroup.com';
 let authToken = null, currentUser = null, currentEngagement = null;
 let allItems = [], editingItemId = null;
 let pendingFiles = [], filesToDelete = [];
+let flagsByItem = {}; // itemId -> array of item_flags records for the current engagement
+
+// QC flags
+async function loadFlags() {
+  if (!currentEngagement) { flagsByItem = {}; return; }
+  try {
+    const res = await fetch(`${POCKETBASE_URL}/api/collections/item_flags/records?filter=(item.engagement_id='${currentEngagement.id}')&perPage=500&sort=-created&expand=created_by,resolved_by`, {headers:{'Authorization':authToken}});
+    const data = await res.json();
+    const byItem = {};
+    (data.items||[]).forEach(f => { (byItem[f.item] = byItem[f.item] || []).push(f); });
+    flagsByItem = byItem;
+  } catch(e) { flagsByItem = {}; }
+}
+function openFlagCount(itemId) {
+  return (flagsByItem[itemId]||[]).filter(f=>!f.resolved).length;
+}
+async function createQcFlag(itemId, note) {
+  if (!note || !note.trim()) return;
+  await fetch(`${POCKETBASE_URL}/api/collections/item_flags/records`, {
+    method:'POST',
+    headers:{'Authorization':authToken,'Content-Type':'application/json'},
+    body: JSON.stringify({ item: itemId, note: note.trim(), created_by: currentUser.id })
+  });
+}
+async function resolveQcFlag(flagId, itemId) {
+  await fetch(`${POCKETBASE_URL}/api/collections/item_flags/records/${flagId}`, {
+    method:'PATCH',
+    headers:{'Authorization':authToken,'Content-Type':'application/json'},
+    body: JSON.stringify({ resolved: true, resolved_by: currentUser.id, resolved_at: new Date().toISOString() })
+  });
+  await loadFlags();
+  renderQcThread(itemId);
+  renderItems(currentFilteredItems());
+}
+function renderQcThread(itemId) {
+  const el = document.getElementById('qc-thread');
+  const flags = (flagsByItem[itemId]||[]).slice().sort((a,b)=>{
+    if (a.resolved !== b.resolved) return a.resolved ? 1 : -1;
+    return new Date(b.created) - new Date(a.created);
+  });
+  if (flags.length === 0) { el.innerHTML = '<div class="qc-empty">No flags on this item.</div>'; return; }
+  el.innerHTML = flags.map(f => {
+    const author = (f.expand && f.expand.created_by) ? (f.expand.created_by.name || f.expand.created_by.email) : 'Staff';
+    const when = f.created ? f.created.split(' ')[0] : '';
+    return `<div class="qc-entry ${f.resolved?'resolved':''}">
+      <div class="qc-note-text">${(f.note||'').replace(/</g,'&lt;')}</div>
+      <div class="qc-entry-meta">
+        <span>${author} · ${when}</span>
+        ${f.resolved ? '<span>Resolved</span>' : `<button class="qc-resolve-btn" onclick="resolveQcFlag('${f.id}','${itemId}')">Mark resolved</button>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+async function addQcNote() {
+  if (!editingItemId) return;
+  const ta = document.getElementById('qc-new-note');
+  const note = ta.value;
+  if (!note.trim()) return;
+  await createQcFlag(editingItemId, note);
+  ta.value = '';
+  await loadFlags();
+  renderQcThread(editingItemId);
+  renderItems(currentFilteredItems());
+}
+function currentFilteredItems() {
+  const room=document.getElementById('room-filter').value;
+  const status=document.getElementById('status-filter').value;
+  const qcOnly=document.getElementById('qc-filter').checked;
+  return allItems.filter(i=>(!room||i.room===room)&&(!status||i.status===status)&&(!qcOnly||openFlagCount(i.id)>0));
+}
+
+// Quick-flag popover (row-level, one click)
+function openQcPopover(itemId, btnEl) {
+  closeQcPopover();
+  const rect = btnEl.getBoundingClientRect();
+  const pop = document.createElement('div');
+  pop.className = 'qc-popover';
+  pop.id = 'qc-popover';
+  pop.innerHTML = `<textarea id="qc-pop-note" placeholder="What should staff know?"></textarea>
+    <div class="qc-popover-row">
+      <button class="btn btn-secondary btn-small" onclick="closeQcPopover()">Cancel</button>
+      <button class="btn btn-save btn-small" onclick="submitQcPopover('${itemId}')">Flag item</button>
+    </div>`;
+  document.body.appendChild(pop);
+  const top = Math.min(rect.bottom + 6, window.innerHeight - 160);
+  const left = Math.min(rect.left - 190, window.innerWidth - 280);
+  pop.style.top = `${Math.max(8, top)}px`;
+  pop.style.left = `${Math.max(8, left)}px`;
+  document.getElementById('qc-pop-note').focus();
+  setTimeout(()=>document.addEventListener('click', outsideQcPopover), 0);
+}
+function outsideQcPopover(e) {
+  const pop = document.getElementById('qc-popover');
+  if (pop && !pop.contains(e.target)) closeQcPopover();
+}
+function closeQcPopover() {
+  const pop = document.getElementById('qc-popover');
+  if (pop) pop.remove();
+  document.removeEventListener('click', outsideQcPopover);
+}
+async function submitQcPopover(itemId) {
+  const note = document.getElementById('qc-pop-note').value;
+  if (!note.trim()) return;
+  await createQcFlag(itemId, note);
+  closeQcPopover();
+  await loadFlags();
+  renderItems(currentFilteredItems());
+}
 
 // Auth
 async function doLogin() {
@@ -439,14 +582,15 @@ function showEngagements() {
 // Items
 async function loadItems() {
   const tbody=document.getElementById('items-tbody');
-  tbody.innerHTML='<tr><td colspan="13" class="loading">Loading items…</td></tr>';
+  tbody.innerHTML='<tr><td colspan="14" class="loading">Loading items…</td></tr>';
   try {
     const res=await fetch(`${POCKETBASE_URL}/api/collections/items/records?filter=(engagement_id='${currentEngagement.id}')&perPage=500&sort=room,item_description`,{headers:{'Authorization':authToken}});
     const data=await res.json();
     allItems=data.items||[];
     document.getElementById('export-count').textContent=allItems.length;
+    await loadFlags();
     populateRoomFilter();renderItems(allItems);
-  } catch(e){tbody.innerHTML=`<tr><td colspan="13" style="padding:24px;color:#8B3A3A;font-style:italic;">${e.message}</td></tr>`;}
+  } catch(e){tbody.innerHTML=`<tr><td colspan="14" style="padding:24px;color:#8B3A3A;font-style:italic;">${e.message}</td></tr>`;}
 }
 
 function populateRoomFilter() {
@@ -457,9 +601,7 @@ function populateRoomFilter() {
 }
 
 function filterItems() {
-  const room=document.getElementById('room-filter').value;
-  const status=document.getElementById('status-filter').value;
-  renderItems(allItems.filter(i=>(!room||i.room===room)&&(!status||i.status===status)));
+  renderItems(currentFilteredItems());
 }
 
 function attachmentUrl(itemId,filename) {
@@ -469,11 +611,13 @@ function isImage(f){return /\.(jpg|jpeg|png|gif|webp|heic|heif)$/i.test(f);}
 
 function renderItems(items) {
   const tbody=document.getElementById('items-tbody');
-  if(items.length===0){tbody.innerHTML='<tr><td colspan="13" class="empty-state" style="padding:52px;font-style:italic;color:var(--ink-soft);">No items found. Use "+ Add Item" to begin.</td></tr>';return;}
+  if(items.length===0){tbody.innerHTML='<tr><td colspan="14" class="empty-state" style="padding:52px;font-style:italic;color:var(--ink-soft);">No items found. Use "+ Add Item" to begin.</td></tr>';return;}
   tbody.innerHTML='';
   items.forEach(item=>{
     const tr=document.createElement('tr');
     if(item.appraisal_flag) tr.classList.add('flagged');
+    const qcOpen=openFlagCount(item.id);
+    if(qcOpen>0) tr.classList.add('qc-flagged');
     const condBadge=item.condition?`<span class="badge badge-${item.condition.toLowerCase()}">${item.condition}</span>`:'<span style="color:var(--ink-soft)">—</span>';
     const statBadge=item.status?`<span class="badge badge-${item.status}">${item.status}</span>`:'<span style="color:var(--ink-soft)">—</span>';
     const photoFiles=Array.isArray(item.photo_files)?item.photo_files:(item.photo_files?[item.photo_files]:[]);
@@ -495,7 +639,8 @@ function renderItems(items) {
       thumbHtml+='</div>';
     }
     const ageBadge=item.age_years!=null?`${item.age_years} yr`:'—';
-    tr.innerHTML=`<td class="td-flag">${item.appraisal_flag?'⚑':''}</td><td>${thumbHtml}</td><td style="color:var(--ink-soft);font-size:12px;">${item.room||'—'}</td><td class="td-desc" title="${(item.item_description||'').replace(/"/g,"'")}">${item.item_description||'—'}</td><td style="color:var(--ink-mid);font-size:12px;">${item.brand_maker||'—'}</td><td style="text-align:center;">${item.quantity||1}</td><td style="text-align:center;font-size:12px;color:var(--ink-mid);">${ageBadge}</td><td>${condBadge}</td><td style="font-size:12px;color:var(--ink-mid);">${item.model_number||'—'}</td><td style="font-size:12px;color:var(--ink-mid);">${item.serial_number||'—'}</td><td style="font-size:12px;">${item.replacement_value_each?'$'+Number(item.replacement_value_each).toLocaleString():'—'}</td><td>${statBadge}</td><td><button class="btn-edit" onclick="openEditItem('${item.id}')">Edit</button></td>`;
+    const qcCell=`<button class="qc-btn ${qcOpen>0?'has-open':''}" title="Flag this item" onclick="event.stopPropagation();openQcPopover('${item.id}',this)">🚩${qcOpen>0?`<span class="qc-count">${qcOpen}</span>`:''}</button>`;
+    tr.innerHTML=`<td class="td-flag">${item.appraisal_flag?'⚑':''}</td><td class="td-qc">${qcCell}</td><td>${thumbHtml}</td><td style="color:var(--ink-soft);font-size:12px;">${item.room||'—'}</td><td class="td-desc" title="${(item.item_description||'').replace(/"/g,"'")}">${item.item_description||'—'}</td><td style="color:var(--ink-mid);font-size:12px;">${item.brand_maker||'—'}</td><td style="text-align:center;">${item.quantity||1}</td><td style="text-align:center;font-size:12px;color:var(--ink-mid);">${ageBadge}</td><td>${condBadge}</td><td style="font-size:12px;color:var(--ink-mid);">${item.model_number||'—'}</td><td style="font-size:12px;color:var(--ink-mid);">${item.serial_number||'—'}</td><td style="font-size:12px;">${item.replacement_value_each?'$'+Number(item.replacement_value_each).toLocaleString():'—'}</td><td>${statBadge}</td><td><button class="btn-edit" onclick="openEditItem('${item.id}')">Edit</button></td>`;
     tbody.appendChild(tr);
   });
 }
@@ -555,6 +700,7 @@ function openNewItem(){
   clearModal();
   document.getElementById('existing-attachments').innerHTML='';
   renderPendingUploads();
+  document.getElementById('qc-section').style.display='none';
   document.getElementById('item-modal').classList.add('open');
 }
 function openEditItem(id){
@@ -583,6 +729,8 @@ function openEditItem(id){
   document.getElementById('save-status').textContent='';
   renderExistingAttachments(item);
   renderPendingUploads();
+  document.getElementById('qc-section').style.display='block';
+  renderQcThread(id);
   document.getElementById('item-modal').classList.add('open');
 }
 function clearModal(){
@@ -594,7 +742,7 @@ function clearModal(){
   ['f-purchase','f-repl-value','f-depr-pct'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('save-status').textContent='';
 }
-function closeModal(){document.getElementById('item-modal').classList.remove('open');editingItemId=null;pendingFiles=[];filesToDelete=[];}
+function closeModal(){document.getElementById('item-modal').classList.remove('open');editingItemId=null;pendingFiles=[];filesToDelete=[];document.getElementById('qc-new-note').value='';}
 
 async function saveItem(){
   const statusEl=document.getElementById('save-status');
