@@ -388,6 +388,7 @@
 
     </div>
     <div class="modal-footer">
+      <button class="btn btn-secondary btn-small" id="delete-item-btn" style="color:#b23b3b;border-color:#b23b3b;" onclick="deleteItem()">Delete Item</button>
       <div class="save-status" id="save-status"></div>
       <div style="display:flex;gap:10px;">
         <button class="btn btn-secondary btn-small" onclick="closeModal()">Cancel</button>
@@ -708,6 +709,7 @@ function openNewItem(){
   renderPendingUploads();
   document.getElementById('qc-section').style.display='none';
   document.getElementById('item-modal').classList.add('open');
+  document.getElementById('delete-item-btn').style.display='none';
   updateModalNav();
 }
 function openEditItem(id){
@@ -739,6 +741,7 @@ function openEditItem(id){
   document.getElementById('qc-section').style.display='block';
   renderQcThread(id);
   document.getElementById('item-modal').classList.add('open');
+  document.getElementById('delete-item-btn').style.display='inline-block';
   updateModalNav();
 }
 function updateModalNav(){
@@ -776,6 +779,24 @@ function clearModal(){
 }
 function closeModal(){document.getElementById('item-modal').classList.remove('open');editingItemId=null;pendingFiles=[];filesToDelete=[];document.getElementById('qc-new-note').value='';}
 
+async function deleteItem(){
+  if(!editingItemId) return;
+  const desc=document.getElementById('f-desc').value.trim()||'this item';
+  if(!confirm(`Delete "${desc}" permanently? This cannot be undone.`)) return;
+  const statusEl=document.getElementById('save-status');
+  statusEl.textContent='Deleting…';statusEl.className='save-status';
+  try{
+    const res=await fetch(`${POCKETBASE_URL}/api/collections/items/records/${editingItemId}`,{method:'DELETE',headers:{'Authorization':authToken}});
+    if(!res.ok){
+      const data=await res.json().catch(()=>({}));
+      throw new Error(data.message||'Delete failed');
+    }
+    await loadItems();
+    closeModal();
+  } catch(e){
+    statusEl.textContent='✗ '+e.message;statusEl.className='save-status error';
+  }
+}
 async function saveItem(andNext=false){
   const statusEl=document.getElementById('save-status');
   statusEl.textContent='Saving…';statusEl.className='save-status';
