@@ -300,6 +300,11 @@
   <div class="modal">
     <div class="modal-header">
       <div class="modal-title" id="modal-title">Edit Item</div>
+      <div class="modal-nav" id="modal-nav" style="display:flex;align-items:center;gap:10px;margin-left:auto;margin-right:14px;">
+        <button class="btn btn-secondary btn-small" id="nav-prev" onclick="goToAdjacentItem(-1)" title="Previous item">‹ Prev</button>
+        <span id="nav-position" style="font-size:11px;color:var(--ink-soft);white-space:nowrap;"></span>
+        <button class="btn btn-secondary btn-small" id="nav-next" onclick="goToAdjacentItem(1)" title="Next item">Next ›</button>
+      </div>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body">
@@ -386,7 +391,8 @@
       <div class="save-status" id="save-status"></div>
       <div style="display:flex;gap:10px;">
         <button class="btn btn-secondary btn-small" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-save btn-small" onclick="saveItem()">Save Item</button>
+        <button class="btn btn-secondary btn-small" id="save-next-btn" onclick="saveItem(true)">Save &amp; Next ›</button>
+        <button class="btn btn-save btn-small" onclick="saveItem(false)">Save Item</button>
       </div>
     </div>
   </div>
@@ -702,6 +708,7 @@ function openNewItem(){
   renderPendingUploads();
   document.getElementById('qc-section').style.display='none';
   document.getElementById('item-modal').classList.add('open');
+  updateModalNav();
 }
 function openEditItem(id){
   const item=allItems.find(i=>i.id===id);if(!item)return;
@@ -732,6 +739,31 @@ function openEditItem(id){
   document.getElementById('qc-section').style.display='block';
   renderQcThread(id);
   document.getElementById('item-modal').classList.add('open');
+  updateModalNav();
+}
+function updateModalNav(){
+  const nav=document.getElementById('modal-nav');
+  const saveNextBtn=document.getElementById('save-next-btn');
+  if(!editingItemId){
+    nav.style.display='none';
+    saveNextBtn.style.display='none';
+    return;
+  }
+  nav.style.display='flex';
+  saveNextBtn.style.display='inline-block';
+  const list=currentFilteredItems();
+  const idx=list.findIndex(i=>i.id===editingItemId);
+  document.getElementById('nav-position').textContent = idx===-1 ? '' : `${idx+1} of ${list.length}`;
+  document.getElementById('nav-prev').disabled = idx<=0;
+  document.getElementById('nav-next').disabled = (idx===-1) || (idx>=list.length-1);
+}
+function goToAdjacentItem(offset){
+  const list=currentFilteredItems();
+  const idx=list.findIndex(i=>i.id===editingItemId);
+  if(idx===-1)return;
+  const newIdx=idx+offset;
+  if(newIdx<0||newIdx>=list.length)return;
+  openEditItem(list[newIdx].id);
 }
 function clearModal(){
   ['f-desc','f-brand','f-room','f-model','f-serial','f-age','f-photos','f-retailer','f-repl-source','f-notes','f-depr-cat'].forEach(id=>document.getElementById(id).value='');
@@ -744,7 +776,7 @@ function clearModal(){
 }
 function closeModal(){document.getElementById('item-modal').classList.remove('open');editingItemId=null;pendingFiles=[];filesToDelete=[];document.getElementById('qc-new-note').value='';}
 
-async function saveItem(){
+async function saveItem(andNext=false){
   const statusEl=document.getElementById('save-status');
   statusEl.textContent='Saving…';statusEl.className='save-status';
   if(!document.getElementById('f-desc').value.trim()){
@@ -784,8 +816,21 @@ async function saveItem(){
     if(!res.ok) throw new Error(data.message||'Save failed');
     statusEl.textContent='✓ Saved';statusEl.className='save-status success';
     pendingFiles=[];filesToDelete=[];
+    const savedId=editingItemId;
     await loadItems();
-    setTimeout(closeModal,700);
+    if(andNext && savedId){
+      const list=currentFilteredItems();
+      const idx=list.findIndex(i=>i.id===savedId);
+      const nextItem=idx!==-1?list[idx+1]:undefined;
+      if(nextItem){
+        openEditItem(nextItem.id);
+      } else {
+        statusEl.textContent='✓ Saved — no more items in this view';
+        setTimeout(closeModal,1000);
+      }
+    } else {
+      setTimeout(closeModal,700);
+    }
   } catch(e){statusEl.textContent='✗ '+e.message;statusEl.className='save-status error';}
 }
 
