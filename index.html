@@ -444,6 +444,24 @@ async function resolveQcFlag(flagId, itemId) {
   renderQcThread(itemId);
   renderItems(currentFilteredItems());
 }
+async function deleteQcFlag(flagId, itemId) {
+  if(!confirm('Delete this flag permanently? This cannot be undone.')) return;
+  try {
+    const res = await fetch(`${POCKETBASE_URL}/api/collections/item_flags/records/${flagId}`, {
+      method:'DELETE',
+      headers:{'Authorization':authToken}
+    });
+    if(!res.ok){
+      const data = await res.json().catch(()=>({}));
+      throw new Error(data.message||'Delete failed');
+    }
+    await loadFlags();
+    renderQcThread(itemId);
+    renderItems(currentFilteredItems());
+  } catch(e) {
+    alert('Failed to delete flag: '+e.message);
+  }
+}
 function renderQcThread(itemId) {
   const el = document.getElementById('qc-thread');
   const flags = (flagsByItem[itemId]||[]).slice().sort((a,b)=>{
@@ -458,7 +476,10 @@ function renderQcThread(itemId) {
       <div class="qc-note-text">${(f.note||'').replace(/</g,'&lt;')}</div>
       <div class="qc-entry-meta">
         <span>${author} · ${when}</span>
-        ${f.resolved ? '<span>Resolved</span>' : `<button class="qc-resolve-btn" onclick="resolveQcFlag('${f.id}','${itemId}')">Mark resolved</button>`}
+        <span style="display:flex;gap:10px;align-items:center;">
+          ${f.resolved ? '<span>Resolved</span>' : `<button class="qc-resolve-btn" onclick="resolveQcFlag('${f.id}','${itemId}')">Mark resolved</button>`}
+          <button class="qc-resolve-btn" style="color:#b23b3b;" onclick="deleteQcFlag('${f.id}','${itemId}')" title="Delete this flag">Delete</button>
+        </span>
       </div>
     </div>`;
   }).join('');
