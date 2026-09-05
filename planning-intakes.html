@@ -131,13 +131,21 @@
 
 <!-- Login -->
 <div id="login-screen">
-  <div class="login-box">
+  <div class="login-box" id="login-box-password">
     <div class="login-logo">Held</div>
     <div class="login-sub">Advisory Group &nbsp;·&nbsp; Planning Intakes</div>
     <div class="form-group"><label>Email</label><input type="email" id="login-email" autocomplete="email"></div>
     <div class="form-group"><label>Password</label><input type="password" id="login-password" autocomplete="current-password"></div>
     <button class="btn btn-primary" onclick="doLogin()">Sign In</button>
     <div id="login-error">Incorrect email or password. Please try again.</div>
+  </div>
+  <div class="login-box" id="login-box-otp" style="display:none;">
+    <div class="login-logo">Held</div>
+    <div class="login-sub">Advisory Group &nbsp;·&nbsp; Verification Code</div>
+    <p style="font-size:12px;color:var(--ink-mid);margin-bottom:20px;">We've emailed a one-time code to your address. Enter it below to finish signing in.</p>
+    <div class="form-group"><label>Code</label><input type="text" id="login-otp-code" autocomplete="one-time-code" inputmode="numeric"></div>
+    <button class="btn btn-primary" onclick="submitOtp()">Verify &amp; Sign In</button>
+    <div id="otp-error" style="color:#8B3A3A;font-size:12px;margin-top:12px;display:none;font-style:italic;">Invalid or expired code. Please try again.</div>
   </div>
 </div>
 
@@ -245,6 +253,7 @@ const SECTIONS = [
 ];
 
 let authToken = null, currentUser = null, allIntakes = [];
+let pendingMfaId = null, pendingOtpId = null, pendingEmail = null;
 
 async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
@@ -259,36 +268,94 @@ async function doLogin() {
     // affecting List/View rules on planning_intake. Practically, this means
     // only whoever holds the actual PocketBase superuser login can see this
     // page's data — which is the intended admin-only restriction.
+    //
+    // Superuser accounts here also have MFA enabled (password + emailed
+    // OTP code), so a successful password step returns a 401 with an
+    // mfaId rather than a token — that's expected, and triggers the OTP
+    // step below rather than being treated as a failed login.
     const res = await fetch(`${PB_URL}/api/collections/_superusers/auth-with-password`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ identity: email, password: pass })
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Login failed');
-    authToken = data.token;
-    currentUser = data.record;
 
-    document.getElementById('header-user').textContent = currentUser.email;
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    loadIntakes();
+    if (res.ok && data.token) {
+      // MFA not required (or already satisfied) — log straight in.
+      completeLogin(data);
+      return;
+    }
+
+    if (!res.ok && data.mfaId) {
+      pendingMfaId = data.mfaId;
+      pendingEmail = email;
+      const otpRes = await fetch(`${PB_URL}/api/collections/_superusers/request-otp`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const otpData = await otpRes.json();
+      if (!otpRes.ok) throw new Error(otpData.message || 'Could not send verification code');
+      pendingOtpId = otpData.otpId;
+
+      document.getElementById('login-box-password').style.display = 'none';
+      document.getElementById('login-box-otp').style.display = 'block';
+      document.getElementById('login-otp-code').focus();
+      return;
+    }
+
+    throw new Error(data.message || 'Login failed');
   } catch (e) {
     errEl.style.display = 'block';
     errEl.textContent = 'Incorrect email or password. Please try again.';
   }
 }
 
+async function submitOtp() {
+  const code = document.getElementById('login-otp-code').value.trim();
+  const errEl = document.getElementById('otp-error');
+  errEl.style.display = 'none';
+  if (!code) { errEl.style.display = 'block'; errEl.textContent = 'Please enter the code from your email.'; return; }
+  try {
+    const res = await fetch(`${PB_URL}/api/collections/_superusers/auth-with-otp`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ otpId: pendingOtpId, password: code, mfaId: pendingMfaId })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Verification failed');
+    completeLogin(data);
+  } catch (e) {
+    errEl.style.display = 'block';
+    errEl.textContent = 'Invalid or expired code. Please try again.';
+  }
+}
+
+function completeLogin(data) {
+  authToken = data.token;
+  currentUser = data.record;
+  pendingMfaId = null; pendingOtpId = null; pendingEmail = null;
+
+  document.getElementById('header-user').textContent = currentUser.email;
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  loadIntakes();
+}
+
 function doLogout() {
   authToken = null; currentUser = null; allIntakes = [];
+  pendingMfaId = null; pendingOtpId = null; pendingEmail = null;
   document.getElementById('app').style.display = 'none';
   document.getElementById('denied-screen').style.display = 'none';
+  document.getElementById('login-box-otp').style.display = 'none';
+  document.getElementById('login-box-password').style.display = 'block';
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('login-email').value = '';
   document.getElementById('login-password').value = '';
+  document.getElementById('login-otp-code').value = '';
 }
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') doLogin();
+  if (e.key !== 'Enter') return;
+  if (document.getElementById('login-box-password').style.display !== 'none') doLogin();
+  else if (document.getElementById('login-box-otp').style.display !== 'none') submitOtp();
 });
 
 async function loadIntakes() {
