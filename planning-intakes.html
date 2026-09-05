@@ -253,7 +253,13 @@ async function doLogin() {
   errEl.style.display = 'none';
   if (!email || !pass) { errEl.style.display = 'block'; errEl.textContent = 'Please enter your email and password.'; return; }
   try {
-    const res = await fetch(`${PB_URL}/api/collections/users/auth-with-password`, {
+    // This page authenticates against PocketBase's superuser collection
+    // rather than the regular `users` collection. Superusers bypass API
+    // rules entirely, which sidesteps the known v0.36.9 equality-rule bug
+    // affecting List/View rules on planning_intake. Practically, this means
+    // only whoever holds the actual PocketBase superuser login can see this
+    // page's data — which is the intended admin-only restriction.
+    const res = await fetch(`${PB_URL}/api/collections/_superusers/auth-with-password`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ identity: email, password: pass })
     });
@@ -262,14 +268,7 @@ async function doLogin() {
     authToken = data.token;
     currentUser = data.record;
 
-    if (currentUser.role !== 'admin') {
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('denied-screen').style.display = 'block';
-      authToken = null; currentUser = null;
-      return;
-    }
-
-    document.getElementById('header-user').textContent = currentUser.name || currentUser.email;
+    document.getElementById('header-user').textContent = currentUser.email;
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     loadIntakes();
