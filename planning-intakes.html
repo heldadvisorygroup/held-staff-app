@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Held Advisory Group — Planning Intakes</title>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Bitter:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #DEDFCE;
+    --bg-dark:  #CCCDBF;
+    --bg-card:  #E8E9DA;
+    --ink:      #474838;
+    --ink-mid:  #6B6C5A;
+    --ink-soft: #9A9B8A;
+    --sage:     #ABAD9A;
+    --teal:     #86AFA8;
+    --lime:     #EDFC4E;
+    --white:    #FAFAF5;
+    --border:   rgba(71,72,56,0.15);
+    --border-strong: rgba(71,72,56,0.3);
+    --font-display: 'Young Serif', Georgia, serif;
+    --font-body:    'Bitter', Georgia, serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    font-size: 14px;
+    font-weight: 300;
+  }
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    padding: 24px;
+  }
+  .login-box {
+    width: 100%;
+    max-width: 420px;
+    background: var(--white);
+    border: 1px solid var(--border-strong);
+    padding: 52px 44px 44px;
+    position: relative;
+  }
+  .login-box::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--lime);
+  }
+  .login-logo { font-family: var(--font-display); font-size: 36px; color: var(--ink); margin-bottom: 2px; line-height: 1; }
+  .login-sub { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mid); margin-bottom: 40px; font-weight: 400; }
+  .form-group { margin-bottom: 20px; }
+  .form-group label { display: block; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-mid); margin-bottom: 7px; font-weight: 500; }
+  .form-group input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border-strong);
+    color: var(--ink);
+    padding: 10px 13px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 300;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    -webkit-appearance: none;
+  }
+  .form-group input:focus { border-color: var(--teal); background: var(--white); }
+  .btn { display: inline-block; padding: 11px 28px; font-family: var(--font-body); font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; border: none; transition: all 0.18s; }
+  .btn-primary { background: var(--ink); color: var(--bg); width: 100%; text-align: center; }
+  .btn-primary:hover { background: var(--teal); color: var(--white); }
+  #login-error { color: #8B3A3A; font-size: 12px; margin-top: 12px; display: none; font-style: italic; }
+  #app { display: none; min-height: 100vh; }
+  .app-header { background: var(--ink); padding: 0 32px; height: 54px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .header-logo { font-family: var(--font-display); font-size: 22px; color: var(--bg); letter-spacing: 0.02em; }
+  .header-right { display: flex; align-items: center; gap: 20px; }
+  .header-user { font-size: 12px; color: var(--sage); letter-spacing: 0.04em; }
+  .btn-logout { background: none; border: 1px solid rgba(171,173,154,0.4); color: var(--sage); padding: 5px 14px; font-family: var(--font-body); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.18s; }
+  .btn-logout:hover { border-color: var(--bg); color: var(--bg); }
+
+  #list-screen { padding: 52px 36px; max-width: 780px; margin: 0 auto; }
+  .screen-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 8px; font-weight: 500; }
+  .screen-title { font-family: var(--font-display); font-size: 38px; color: var(--ink); margin-bottom: 36px; line-height: 1.1; }
+  .intake-list { display: flex; flex-direction: column; gap: 10px; }
+  .intake-card { background: var(--white); border: 1px solid var(--border); padding: 20px 24px; cursor: pointer; transition: all 0.18s; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .intake-card:hover { border-color: var(--teal); background: var(--bg-card); transform: translateX(3px); }
+  .intake-code { font-family: var(--font-display); font-size: 18px; color: var(--ink); margin-bottom: 3px; }
+  .intake-meta { font-size: 12px; color: var(--ink-soft); font-style: italic; }
+  .intake-status { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 10px; font-weight: 500; flex-shrink: 0; }
+  .status-submitted { background: rgba(134,175,168,0.2); color: var(--teal); }
+  .status-draft     { background: rgba(71,72,56,0.08);    color: var(--ink-soft); }
+  .loading, .empty-state { text-align: center; padding: 60px; color: var(--ink-soft); font-style: italic; }
+  .empty-state h3 { font-family: var(--font-display); font-size: 26px; font-weight: 400; margin-bottom: 8px; color: var(--ink); }
+  .access-denied { max-width: 480px; margin: 120px auto; text-align: center; padding: 0 24px; }
+  .access-denied h1 { font-family: var(--font-display); font-size: 30px; margin-bottom: 14px; }
+  .access-denied p { color: var(--ink-mid); font-size: 14px; line-height: 1.6; }
+
+  #detail-screen { display: none; padding: 32px 32px 96px; max-width: 780px; margin: 0 auto; }
+  .detail-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; gap: 16px; flex-wrap: wrap; }
+  .btn-back { background: none; border: 1px solid var(--border-strong); color: var(--ink-mid); padding: 7px 14px; font-family: var(--font-body); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.18s; margin-bottom: 20px; }
+  .btn-back:hover { border-color: var(--ink); color: var(--ink); }
+  .detail-title { font-family: var(--font-display); font-size: 30px; color: var(--ink); margin-bottom: 4px; }
+  .detail-meta { font-size: 12px; color: var(--ink-soft); margin-bottom: 8px; }
+  .pb-link { font-size: 11px; color: var(--teal); text-decoration: none; letter-spacing: 0.04em; }
+  .pb-link:hover { text-decoration: underline; }
+
+  .section-card { background: var(--white); border: 1px solid var(--border); margin-top: 24px; }
+  .section-header { padding: 18px 24px 14px; border-bottom: 1px solid var(--border); }
+  .section-title { font-family: var(--font-display); font-size: 19px; color: var(--ink); margin-bottom: 4px; }
+  .section-hint { font-size: 12px; color: var(--ink-soft); font-style: italic; line-height: 1.5; }
+  .section-body { padding: 6px 24px 6px; }
+  .entry-block { padding: 16px 0; border-bottom: 1px solid rgba(71,72,56,0.08); }
+  .entry-block:last-child { border-bottom: none; }
+  .entry-row { display: flex; gap: 14px; padding: 4px 0; font-size: 13px; }
+  .entry-label { flex: 0 0 160px; color: var(--teal); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; padding-top: 1px; }
+  .entry-value { color: var(--ink); flex: 1; }
+  .section-empty { padding: 18px 0; font-size: 13px; color: var(--ink-soft); font-style: italic; }
+</style>
+</head>
+<body>
+
+<script>
+  const PB_URL = 'https://db.heldadvisorygroup.com';
+</script>
+
+<!-- Login -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Held</div>
+    <div class="login-sub">Advisory Group &nbsp;·&nbsp; Planning Intakes</div>
+    <div class="form-group"><label>Email</label><input type="email" id="login-email" autocomplete="email"></div>
+    <div class="form-group"><label>Password</label><input type="password" id="login-password" autocomplete="current-password"></div>
+    <button class="btn btn-primary" onclick="doLogin()">Sign In</button>
+    <div id="login-error">Incorrect email or password. Please try again.</div>
+  </div>
+</div>
+
+<!-- Access denied (non-admin) -->
+<div id="denied-screen" style="display:none;">
+  <div class="access-denied">
+    <h1>Restricted</h1>
+    <p>This view is limited to advisor accounts. If you believe this is a mistake, please check with your administrator.</p>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app">
+  <header class="app-header">
+    <div class="header-logo">Held</div>
+    <div class="header-right">
+      <span class="header-user" id="header-user"></span>
+      <button class="btn-logout" onclick="doLogout()">Sign Out</button>
+    </div>
+  </header>
+
+  <div id="list-screen">
+    <div class="screen-label">Staff Portal</div>
+    <div class="screen-title">Planning Intakes</div>
+    <div id="intake-list" class="intake-list"><div class="loading">Loading submissions…</div></div>
+  </div>
+
+  <div id="detail-screen">
+    <button class="btn-back" onclick="showList()">← Back to list</button>
+    <div class="detail-header">
+      <div>
+        <div class="detail-title" id="detail-title">Engagement</div>
+        <div class="detail-meta" id="detail-meta"></div>
+      </div>
+      <a class="pb-link" id="detail-pb-link" href="#" target="_blank" rel="noopener">View raw record in PocketBase →</a>
+    </div>
+    <div id="sections-container"></div>
+  </div>
+</div>
+
+<script>
+const SECTIONS = [
+  { id: "adults", label: "Adults in the Household", fields: [
+    { key: "name", label: "Full name" },
+    { key: "cell", label: "Cell phone" },
+    { key: "email", label: "Email" },
+    { key: "allergies", label: "Allergies" },
+    { key: "medications", label: "Medications" },
+    { key: "blood_type", label: "Blood type" },
+  ], hint: "Allergies and medications are worth including — first responders can act faster in an emergency when this is on hand." },
+  { id: "children", label: "Children", fields: [
+    { key: "name", label: "Full name" },
+    { key: "age", label: "Age" },
+    { key: "allergies", label: "Allergies" },
+    { key: "medications", label: "Medications" },
+    { key: "school", label: "School" },
+  ], hint: "Ages help with school pickup and evacuation planning." },
+  { id: "household_staff", label: "Household Staff", fields: [
+    { key: "name", label: "Full name" },
+    { key: "role", label: "Role" },
+    { key: "cell", label: "Cell phone" },
+    { key: "email", label: "Email" },
+  ], hint: "Anyone who works in or around the home regularly." },
+  { id: "caregiver", label: "Caregivers", fields: [
+    { key: "name", label: "Full name" },
+    { key: "relationship", label: "Relationship to household" },
+    { key: "cell", label: "Cell phone" },
+    { key: "email", label: "Email" },
+    { key: "address", label: "Address" },
+  ], hint: "Anyone providing regular care for a family member." },
+  { id: "vehicles", label: "Vehicles", fields: [
+    { key: "make_model", label: "Make & model" },
+    { key: "color", label: "Color" },
+    { key: "fuel_type", label: "Fuel type" },
+    { key: "plate", label: "License plate" },
+  ], hint: "Vehicles kept at this property, for evacuation capacity and fuel/charging needs." },
+  { id: "pets", label: "Pets", fields: [
+    { key: "name", label: "Name" },
+    { key: "type", label: "Type / breed" },
+    { key: "vet", label: "Veterinarian" },
+  ], hint: "Anything that needs to evacuate with the household." },
+  { id: "meeting_points", label: "Meeting Points", fields: [
+    { key: "location", label: "Location name" },
+    { key: "address", label: "Address" },
+    { key: "notes", label: "Notes" },
+  ], hint: "Where the household will regroup if separated." },
+  { id: "contact_local", label: "Local Emergency Contact", fields: [
+    { key: "name", label: "Full name" },
+    { key: "relationship", label: "Relationship" },
+    { key: "phone", label: "Phone" },
+    { key: "email", label: "Email" },
+  ], hint: "Someone nearby who could reach the property quickly if needed." },
+  { id: "contact_out_of_area", label: "Out-of-Area Contact", fields: [
+    { key: "name", label: "Full name" },
+    { key: "relationship", label: "Relationship" },
+    { key: "phone", label: "Phone" },
+    { key: "email", label: "Email" },
+  ], hint: "Someone outside the region who can serve as a communication hub." },
+  { id: "contact_tpe", label: "Third-Party Executor", fields: [
+    { key: "name", label: "Full name" },
+    { key: "role", label: "Role" },
+    { key: "phone", label: "Phone" },
+    { key: "email", label: "Email" },
+  ], hint: "Anyone with legal authority to act on the household's behalf if primary contacts are unreachable." },
+];
+
+let authToken = null, currentUser = null, allIntakes = [];
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  errEl.style.display = 'none';
+  if (!email || !pass) { errEl.style.display = 'block'; errEl.textContent = 'Please enter your email and password.'; return; }
+  try {
+    const res = await fetch(`${PB_URL}/api/collections/users/auth-with-password`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ identity: email, password: pass })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Login failed');
+    authToken = data.token;
+    currentUser = data.record;
+
+    if (currentUser.role !== 'admin') {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('denied-screen').style.display = 'block';
+      authToken = null; currentUser = null;
+      return;
+    }
+
+    document.getElementById('header-user').textContent = currentUser.name || currentUser.email;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadIntakes();
+  } catch (e) {
+    errEl.style.display = 'block';
+    errEl.textContent = 'Incorrect email or password. Please try again.';
+  }
+}
+
+function doLogout() {
+  authToken = null; currentUser = null; allIntakes = [];
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('denied-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-email').value = '';
+  document.getElementById('login-password').value = '';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') doLogin();
+});
+
+async function loadIntakes() {
+  const listEl = document.getElementById('intake-list');
+  listEl.innerHTML = '<div class="loading">Loading submissions…</div>';
+  try {
+    const res = await fetch(`${PB_URL}/api/collections/planning_intake/records?sort=-submitted_at,-created&perPage=200`, {
+      headers: { 'Authorization': authToken }
+    });
+    const data = await res.json();
+    allIntakes = data.items || [];
+    if (allIntakes.length === 0) {
+      listEl.innerHTML = '<div class="empty-state"><h3>No Submissions</h3><p>No planning intakes have been submitted yet.</p></div>';
+      return;
+    }
+    listEl.innerHTML = '';
+    allIntakes.forEach(rec => {
+      const card = document.createElement('div');
+      card.className = 'intake-card';
+      const dateStr = rec.submitted_at ? rec.submitted_at.split(' ')[0] : (rec.created ? rec.created.split(' ')[0] : '—');
+      const statusClass = rec.status === 'submitted' ? 'status-submitted' : 'status-draft';
+      card.innerHTML = `<div><div class="intake-code">${rec.engagement_id || rec.id}</div><div class="intake-meta">${dateStr}</div></div><span class="intake-status ${statusClass}">${rec.status || 'draft'}</span>`;
+      card.onclick = () => openDetail(rec);
+      listEl.appendChild(card);
+    });
+  } catch (e) {
+    listEl.innerHTML = `<div class="empty-state"><h3>Error</h3><p>${e.message}</p></div>`;
+  }
+}
+
+function showList() {
+  document.getElementById('detail-screen').style.display = 'none';
+  document.getElementById('list-screen').style.display = 'block';
+}
+
+function isEntryEmpty(entry, fields) {
+  return !fields.some(f => entry[f.key] !== undefined && entry[f.key] !== null && String(entry[f.key]).trim() !== '');
+}
+
+function renderSection(section, entries) {
+  const list = Array.isArray(entries) ? entries : [];
+  const meaningful = list.filter(e => e && typeof e === 'object' && !isEntryEmpty(e, section.fields));
+
+  let bodyHtml;
+  if (meaningful.length === 0) {
+    bodyHtml = `<div class="section-empty">No information provided.</div>`;
+  } else {
+    bodyHtml = meaningful.map(entry => {
+      const rows = section.fields
+        .filter(f => entry[f.key] !== undefined && entry[f.key] !== null && String(entry[f.key]).trim() !== '')
+        .map(f => `<div class="entry-row"><div class="entry-label">${f.label}</div><div class="entry-value">${String(entry[f.key]).replace(/</g,'&lt;')}</div></div>`)
+        .join('');
+      return `<div class="entry-block">${rows}</div>`;
+    }).join('');
+  }
+
+  return `
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title">${section.label}</div>
+        ${section.hint ? `<div class="section-hint">${section.hint}</div>` : ''}
+      </div>
+      <div class="section-body">${bodyHtml}</div>
+    </div>
+  `;
+}
+
+function openDetail(rec) {
+  document.getElementById('detail-title').textContent = rec.engagement_id || rec.id;
+  const dateStr = rec.submitted_at ? rec.submitted_at.split(' ')[0] : (rec.created ? rec.created.split(' ')[0] : '—');
+  document.getElementById('detail-meta').textContent = `Status: ${rec.status || 'draft'} · Submitted: ${dateStr}`;
+  document.getElementById('detail-pb-link').href = `${PB_URL}/_/#/collections?collection=pbc_2697939079&recordId=${rec.id}`;
+
+  const container = document.getElementById('sections-container');
+  container.innerHTML = SECTIONS.map(section => renderSection(section, rec[section.id])).join('');
+
+  document.getElementById('list-screen').style.display = 'none';
+  document.getElementById('detail-screen').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
