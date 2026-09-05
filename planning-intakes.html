@@ -362,7 +362,7 @@ async function loadIntakes() {
   const listEl = document.getElementById('intake-list');
   listEl.innerHTML = '<div class="loading">Loading submissions…</div>';
   try {
-    const res = await fetch(`${PB_URL}/api/collections/planning_intake/records?sort=-submitted_at,-created&perPage=200`, {
+    const res = await fetch(`${PB_URL}/api/collections/planning_intake/records?sort=-submitted_at&perPage=200`, {
       headers: { 'Authorization': authToken }
     });
     const data = await res.json();
