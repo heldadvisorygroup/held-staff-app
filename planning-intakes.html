@@ -97,9 +97,6 @@
   .status-draft     { background: rgba(71,72,56,0.08);    color: var(--ink-soft); }
   .loading, .empty-state { text-align: center; padding: 60px; color: var(--ink-soft); font-style: italic; }
   .empty-state h3 { font-family: var(--font-display); font-size: 26px; font-weight: 400; margin-bottom: 8px; color: var(--ink); }
-  .access-denied { max-width: 480px; margin: 120px auto; text-align: center; padding: 0 24px; }
-  .access-denied h1 { font-family: var(--font-display); font-size: 30px; margin-bottom: 14px; }
-  .access-denied p { color: var(--ink-mid); font-size: 14px; line-height: 1.6; }
 
   #detail-screen { display: none; padding: 32px 32px 96px; max-width: 780px; margin: 0 auto; }
   .detail-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; gap: 16px; flex-wrap: wrap; }
@@ -146,14 +143,6 @@
     <div class="form-group"><label>Code</label><input type="text" id="login-otp-code" autocomplete="one-time-code" inputmode="numeric"></div>
     <button class="btn btn-primary" onclick="submitOtp()">Verify &amp; Sign In</button>
     <div id="otp-error" style="color:#8B3A3A;font-size:12px;margin-top:12px;display:none;font-style:italic;">Invalid or expired code. Please try again.</div>
-  </div>
-</div>
-
-<!-- Access denied (non-admin) -->
-<div id="denied-screen" style="display:none;">
-  <div class="access-denied">
-    <h1>Restricted</h1>
-    <p>This view is limited to advisor accounts. If you believe this is a mistake, please check with your administrator.</p>
   </div>
 </div>
 
@@ -343,7 +332,6 @@ function doLogout() {
   authToken = null; currentUser = null; allIntakes = [];
   pendingMfaId = null; pendingOtpId = null; pendingEmail = null;
   document.getElementById('app').style.display = 'none';
-  document.getElementById('denied-screen').style.display = 'none';
   document.getElementById('login-box-otp').style.display = 'none';
   document.getElementById('login-box-password').style.display = 'block';
   document.getElementById('login-screen').style.display = 'flex';
