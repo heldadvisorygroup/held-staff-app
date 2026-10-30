@@ -408,6 +408,17 @@
 <script>
 const POCKETBASE_URL_JS = 'https://db.heldadvisorygroup.com';
 let authToken = null, currentUser = null, currentEngagement = null;
+let fileToken = '', fileTokenTimer = null;
+
+// Protected file access: PocketBase serves protected files only with a short-lived file token
+async function refreshFileToken() {
+  if (!authToken) return;
+  try {
+    const res = await fetch(`${POCKETBASE_URL}/api/files/token`, {method:'POST', headers:{'Authorization':authToken}});
+    if (res.ok) fileToken = (await res.json()).token || '';
+  } catch (e) { console.error('File token refresh failed', e); }
+  if (!fileTokenTimer) fileTokenTimer = setInterval(refreshFileToken, 60000);
+}
 let allItems = [], editingItemId = null;
 let pendingFiles = [], filesToDelete = [];
 let flagsByItem = {}; // itemId -> array of item_flags records for the current engagement
@@ -561,6 +572,7 @@ async function doLogin() {
 
 function doLogout() {
   authToken=null;currentUser=null;currentEngagement=null;allItems=[];
+  clearInterval(fileTokenTimer);fileTokenTimer=null;fileToken='';
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('app').style.display='none';
   document.getElementById('login-email').value='';
@@ -609,6 +621,7 @@ function showEngagements() {
 
 // Items
 async function loadItems() {
+  await refreshFileToken();
   const tbody=document.getElementById('items-tbody');
   tbody.innerHTML='<tr><td colspan="14" class="loading">Loading items…</td></tr>';
   try {
@@ -633,7 +646,8 @@ function filterItems() {
 }
 
 function attachmentUrl(itemId,filename) {
-  return `${POCKETBASE_URL}/api/files/items/${itemId}/${encodeURIComponent(filename)}`;
+  const base=`${POCKETBASE_URL}/api/files/items/${itemId}/${encodeURIComponent(filename)}`;
+  return fileToken ? `${base}?token=${encodeURIComponent(fileToken)}` : base;
 }
 function isImage(f){return /\.(jpg|jpeg|png|gif|webp|heic|heif)$/i.test(f);}
 
@@ -674,7 +688,7 @@ function renderItems(items) {
 }
 
 // Lightbox
-function openLightbox(url){document.getElementById('lightbox-img').src=url;document.getElementById('lightbox').classList.add('open');}
+function openLightbox(url){url=url.replace(/token=[^&]*/,'token='+encodeURIComponent(fileToken));document.getElementById('lightbox-img').src=url;document.getElementById('lightbox').classList.add('open');}
 function closeLightbox(){document.getElementById('lightbox').classList.remove('open');document.getElementById('lightbox-img').src='';}
 
 // File upload
