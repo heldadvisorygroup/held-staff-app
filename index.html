@@ -219,6 +219,44 @@
     .app-header { padding: 0 16px; }
     #engagement-screen { padding: 32px 16px; }
   }
+
+  /* Capture mode */
+  .btn-capture { background: var(--ink); color: var(--bg); border: none; padding: 8px 18px; font-family: var(--font-body); font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.18s; }
+  .btn-capture:hover { background: var(--teal); color: var(--white); }
+  .queue-badge { background: var(--lime); color: var(--ink); border: none; padding: 6px 12px; font-family: var(--font-body); font-size: 12px; cursor: pointer; }
+  .queue-badge.is-issue { background: #E9C9B8; }
+  .login-queue-note { margin-top: 18px; font-size: 13px; line-height: 1.5; color: var(--ink); background: var(--lime); padding: 10px 12px; }
+  #capture-screen { max-width: 780px; margin: 0 auto; padding: 24px 20px 72px; }
+  .cap-top { display: flex; align-items: center; gap: 18px; margin-bottom: 14px; }
+  .cap-title { font-family: var(--font-display); font-size: 28px; color: var(--ink); }
+  .cap-title span { font-family: var(--font-body); font-size: 15px; color: var(--ink-mid); margin-left: 10px; }
+  .cap-queue { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; min-height: 40px; margin-bottom: 14px; font-size: 14px; color: var(--ink); }
+  .cap-queue-ok { color: var(--ink-mid); }
+  .cap-btn { font-family: var(--font-body); font-size: 14px; padding: 10px 14px; background: var(--white); color: var(--ink); border: 1px solid var(--border-strong); cursor: pointer; }
+  .cap-btn:hover { border-color: var(--ink); }
+  .cap-panel { background: var(--white); border: 1px solid var(--border); padding: 24px; display: flex; flex-direction: column; gap: 22px; }
+  .cap-row > label { display: block; font-size: 13px; color: var(--ink-mid); margin-bottom: 8px; }
+  .cap-row select, .cap-row input { width: 100%; font-family: var(--font-body); font-size: 18px; padding: 12px 14px; border: 1px solid var(--border-strong); background: var(--white); color: var(--ink); border-radius: 0; }
+  .cap-row input:disabled, .cap-row select:disabled { background: var(--bg-card); color: var(--ink-mid); }
+  .cap-kinds { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--border-strong); }
+  .cap-kinds button { font-family: var(--font-body); font-size: 16px; padding: 15px 8px; border: none; border-right: 1px solid var(--border-strong); background: var(--white); color: var(--ink-mid); cursor: pointer; }
+  .cap-kinds button:last-child { border-right: none; }
+  .cap-kinds button.active { background: var(--ink); color: var(--bg); }
+  .cap-kinds button:disabled:not(.active) { opacity: 0.45; cursor: default; }
+  .cap-hint { font-size: 14px; line-height: 1.5; color: var(--ink-mid); margin-top: 10px; }
+  .cap-group { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--bg-card); border-left: 3px solid var(--teal); padding: 12px 14px; font-size: 15px; line-height: 1.4; color: var(--ink); }
+  .cap-shoot { font-family: var(--font-display); font-size: 24px; padding: 24px; background: var(--lime); color: var(--ink); border: none; cursor: pointer; }
+  .cap-shoot:active { background: #d8ec30; }
+  .cap-recent-title { font-size: 13px; color: var(--ink-mid); margin: 30px 0 10px; }
+  .cap-recent { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .cap-shot { background: var(--white); border: 1px solid var(--border); }
+  .cap-shot img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: var(--bg-dark); }
+  .cap-shot-name { font-size: 11px; color: var(--ink); padding: 6px 8px 0; word-break: break-all; }
+  .cap-shot-status { font-size: 11px; padding: 2px 8px 8px; color: var(--ink-mid); }
+  .cap-shot-status.s-uploaded { color: #4F7F78; }
+  .cap-shot-status.s-error { color: #8B3A3A; }
+  .cap-empty { font-size: 14px; color: var(--ink-soft); font-style: italic; }
+  @media (max-width: 640px) { .cap-kinds button { font-size: 13px; } .cap-title { font-size: 22px; } }
 </style>
 </head>
 <body>
@@ -235,6 +273,7 @@
     <div class="form-group"><label>Password</label><input type="password" id="login-password" autocomplete="current-password"></div>
     <button class="btn btn-primary" onclick="doLogin()">Sign In</button>
     <div id="login-error">Incorrect email or password. Please try again.</div>
+    <div id="login-queue-note" class="login-queue-note" style="display:none;"></div>
   </div>
 </div>
 
@@ -245,6 +284,7 @@
     <div class="header-right">
       <span class="header-user" id="header-user"></span>
       <span class="header-code" id="header-code" style="display:none;"></span>
+      <button class="queue-badge" id="queue-badge" style="display:none;" onclick="processQueue()" title="Tap to retry now"></button>
       <button class="btn-logout" onclick="doLogout()">Sign Out</button>
     </div>
   </header>
@@ -272,6 +312,7 @@
           <input type="checkbox" id="qc-filter" onchange="filterItems()" style="margin:0;">
           🚩 QC flagged only
         </label>
+        <button class="btn-capture" onclick="openCapture()">Capture</button>
         <button class="btn-add" onclick="openNewItem()">+ Add Item</button>
       </div>
     </div>
@@ -287,6 +328,32 @@
         <tbody id="items-tbody"></tbody>
       </table>
     </div>
+  </div>
+
+  <div id="capture-screen" style="display:none;">
+    <div class="cap-top">
+      <button class="btn-back" onclick="closeCapture()">← Items</button>
+      <div class="cap-title">Capture<span id="cap-eng"></span></div>
+    </div>
+    <div id="cap-queue" class="cap-queue"></div>
+    <div class="cap-panel">
+      <div class="cap-row"><label for="cap-room">Room</label><select id="cap-room" onchange="onRoomChange(this.value)"></select></div>
+      <div class="cap-row">
+        <label>Kind of photo</label>
+        <div class="cap-kinds" id="cap-kinds">
+          <button type="button" data-kind="room_area" onclick="setKind('room_area')">Room area</button>
+          <button type="button" data-kind="open_storage" onclick="setKind('open_storage')">Open storage</button>
+          <button type="button" data-kind="item_detail" onclick="setKind('item_detail')">Item detail</button>
+        </div>
+        <div class="cap-hint" id="cap-hint"></div>
+      </div>
+      <div class="cap-row"><label for="cap-label" id="cap-label-title">Label (optional)</label><input type="text" id="cap-label" autocomplete="off" autocapitalize="sentences" oninput="onLabelInput(this.value)"></div>
+      <div class="cap-group" id="cap-group" style="display:none;"></div>
+      <button type="button" class="cap-shoot" id="cap-shoot" onclick="takePhoto()">Take photo</button>
+      <input type="file" id="cap-input" accept="image/*" capture="environment" style="display:none;" onchange="handleCapture(event)">
+    </div>
+    <div class="cap-recent-title">This visit</div>
+    <div id="cap-recent" class="cap-recent"></div>
   </div>
 
   <div class="export-bar" id="export-bar" style="display:none;">
@@ -562,17 +629,16 @@ async function doLogin() {
     const res=await fetch(`${POCKETBASE_URL}/api/collections/users/auth-with-password`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({identity:email,password:pass})});
     const data=await res.json();
     if(!res.ok) throw new Error(data.message||'Login failed');
-    authToken=data.token; currentUser=data.record;
-    document.getElementById('header-user').textContent=currentUser.name||currentUser.email;
-    document.getElementById('login-screen').style.display='none';
-    document.getElementById('app').style.display='block';
-    loadEngagements();
+    enterApp(data.token,data.record);
   } catch(e){errEl.style.display='block';errEl.textContent='Incorrect email or password. Please try again.';}
 }
 
 function doLogout() {
   authToken=null;currentUser=null;currentEngagement=null;allItems=[];
   clearInterval(fileTokenTimer);fileTokenTimer=null;fileToken='';
+  try{sessionStorage.clear();}catch(e){}
+  document.getElementById('capture-screen').style.display='none';
+  updateQueueBadge();
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('app').style.display='none';
   document.getElementById('login-email').value='';
@@ -606,17 +672,21 @@ async function openEngagement(eng) {
   document.getElementById('items-title').textContent=eng.client_code;
   document.getElementById('export-code').textContent=eng.client_code;
   document.getElementById('engagement-screen').style.display='none';
+  document.getElementById('capture-screen').style.display='none';
   document.getElementById('items-screen').style.display='block';
   document.getElementById('export-bar').style.display='flex';
+  saveSession('items');
   await loadItems();
 }
 
 function showEngagements() {
   currentEngagement=null;
+  document.getElementById('capture-screen').style.display='none';
   document.getElementById('items-screen').style.display='none';
   document.getElementById('export-bar').style.display='none';
   document.getElementById('engagement-screen').style.display='block';
   document.getElementById('header-code').style.display='none';
+  saveSession('engagements');
 }
 
 // Items
@@ -911,6 +981,316 @@ function exportCSV(){
   a.href=url;a.download=`Held_${currentEngagement.client_code}_Inventory_${new Date().toISOString().split('T')[0]}.csv`;a.click();
   URL.revokeObjectURL(url);
 }
+
+// ===================== Capture mode (iPad on-site photos) =====================
+const STANDARD_ROOMS=[
+  ['ENT','Entry / foyer'],['LIV','Living room'],['FAM','Family room'],['DIN','Dining room'],
+  ['KIT','Kitchen'],['PAN','Pantry'],['OFF','Office / study'],['PBD','Primary bedroom'],
+  ['PBA','Primary bathroom'],['BD2','Bedroom 2'],['BD3','Bedroom 3'],['BA2','Bathroom 2'],
+  ['BA3','Bathroom 3'],['GB1','Guest bedroom 1'],['GBA','Guest bathroom'],['LAU','Laundry'],
+  ['GAR','Garage'],['STR','Other storage'],['HAL','Hallway'],['EXT','Exterior / patio'],['OUT','Outdoor areas']
+];
+const ROOM_NAMES=Object.fromEntries(STANDARD_ROOMS);
+const KIND_SLUGS={room_area:'area',open_storage:'open',item_detail:'detail'};
+const KIND_HINTS={
+  room_area:'One wall or area of the room per photo.',
+  open_storage:'Open the dresser, closet or cabinet fully, then take one photo.',
+  item_detail:'Every photo until you tap Done is grouped as one item: front, serial plate, model label, any damage.'
+};
+const KIND_PLACEHOLDERS={room_area:'e.g. north wall, window side',open_storage:'e.g. dresser, hall closet',item_detail:'e.g. Sub-Zero refrigerator'};
+
+let capState={room:'',kind:'room_area',label:'',group:null};
+let capRooms=new Set();
+let capCounts={};
+let capRecent=[];
+let sharePrepared=null;
+let uploading=false, uploadIssue='';
+
+function escHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function slugify(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40);}
+function newUuid(){
+  if(window.crypto&&crypto.randomUUID) return crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&0x3|0x8)).toString(16);});
+}
+function extFor(file){
+  const t=(file.type||'').toLowerCase();
+  if(t.includes('jpeg')||t.includes('jpg')) return 'jpg';
+  if(t.includes('png')) return 'png';
+  if(t.includes('heic')) return 'heic';
+  const m=(file.name||'').match(/\.([a-z0-9]+)$/i);
+  return m?m[1].toLowerCase():'jpg';
+}
+
+// ---- Session (survives a page reload on the iPad, cleared on sign-out or when the tab/app closes)
+function enterApp(token,record){
+  authToken=token;currentUser=record;
+  document.getElementById('header-user').textContent=currentUser.name||currentUser.email;
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  saveSession('engagements');
+  loadEngagements();
+  processQueue();
+}
+function saveSession(screen){
+  if(!authToken){return;}
+  try{sessionStorage.setItem('held-session',JSON.stringify({token:authToken,user:currentUser,engagement:currentEngagement,screen}));}catch(e){}
+}
+async function restoreSession(){
+  let saved=null;
+  try{saved=JSON.parse(sessionStorage.getItem('held-session')||'null');}catch(e){}
+  if(!saved||!saved.token) return;
+  let token=saved.token,user=saved.user;
+  try{
+    const res=await fetch(`${POCKETBASE_URL}/api/collections/users/auth-refresh`,{method:'POST',headers:{'Authorization':saved.token}});
+    if(res.status===401||res.status===403){sessionStorage.removeItem('held-session');return;}
+    if(res.ok){const d=await res.json();token=d.token;user=d.record;}
+  }catch(e){/* offline: keep the saved sign-in so capturing can continue */}
+  enterApp(token,user);
+  if(saved.engagement){
+    await openEngagement(saved.engagement);
+    if(saved.screen==='capture') openCapture();
+  }
+}
+
+// ---- On-device queue (IndexedDB): a photo is removed only after PocketBase confirms it
+const QDB='held-capture-queue', QSTORE='queue';
+function qdb(){return new Promise((res,rej)=>{const r=indexedDB.open(QDB,1);r.onupgradeneeded=()=>r.result.createObjectStore(QSTORE,{keyPath:'client_uuid'});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
+async function qPut(rec){const db=await qdb();return new Promise((res,rej)=>{const tx=db.transaction(QSTORE,'readwrite');tx.objectStore(QSTORE).put(rec);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);});}
+async function qDelete(id){const db=await qdb();return new Promise((res,rej)=>{const tx=db.transaction(QSTORE,'readwrite');tx.objectStore(QSTORE).delete(id);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);});}
+async function qAll(){const db=await qdb();return new Promise((res,rej)=>{const r=db.transaction(QSTORE,'readonly').objectStore(QSTORE).getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error);});}
+
+async function captureExists(uuid){
+  try{
+    const f=encodeURIComponent(`(client_uuid='${uuid}')`);
+    const r=await fetch(`${POCKETBASE_URL}/api/collections/captures/records?filter=${f}&fields=id&perPage=1`,{headers:{'Authorization':authToken}});
+    if(!r.ok) return false;
+    const d=await r.json();return (d.items||[]).length>0;
+  }catch(e){return false;}
+}
+
+async function processQueue(){
+  if(uploading) return;
+  if(!authToken){await updateQueueBadge();return;}
+  uploading=true;uploadIssue='';
+  try{
+    const queue=(await qAll()).sort((a,b)=>a.created-b.created);
+    for(const rec of queue){
+      if(!authToken){uploadIssue='signin';break;}
+      const fd=new FormData();
+      fd.append('engagement_id',rec.engagement_id);
+      fd.append('room',rec.room);
+      fd.append('kind',rec.kind);
+      fd.append('label',rec.label||'');
+      fd.append('client_uuid',rec.client_uuid);
+      if(rec.detail_group) fd.append('detail_group',rec.detail_group);
+      if(rec.captured_by) fd.append('captured_by',rec.captured_by);
+      fd.append('photo',new File([rec.data],rec.filename,{type:rec.type||'image/jpeg'}));
+      let res;
+      try{res=await fetch(`${POCKETBASE_URL}/api/collections/captures/records`,{method:'POST',headers:{'Authorization':authToken},body:fd});}
+      catch(e){uploadIssue='offline';break;}
+      if(res.ok){await qDelete(rec.client_uuid);setRecentStatus(rec.client_uuid,'uploaded');continue;}
+      if(res.status===401){uploadIssue='signin';break;}
+      if(res.status===403){uploadIssue='denied';break;}
+      if(res.status>=500){uploadIssue='offline';break;}
+      // Already uploaded on an earlier attempt whose confirmation was lost
+      if(await captureExists(rec.client_uuid)){await qDelete(rec.client_uuid);setRecentStatus(rec.client_uuid,'uploaded');continue;}
+      let msg='Upload rejected';
+      try{const b=await res.json();msg=b.message||msg;if(b.data&&Object.keys(b.data).length)msg+=' ('+Object.entries(b.data).map(([k,v])=>`${k}: ${v.message||v.code||''}`).join('; ')+')';}catch(e){}
+      rec.error=msg;await qPut(rec);setRecentStatus(rec.client_uuid,'error',msg);
+    }
+  }catch(e){console.error('Upload queue error',e);}
+  finally{uploading=false;await updateQueueBadge();}
+}
+
+async function updateQueueBadge(){
+  let q=[];try{q=await qAll();}catch(e){}
+  const n=q.length, failed=q.filter(r=>r.error).length;
+  let text='';
+  if(n>0){
+    text=`${n} photo${n===1?'':'s'} waiting to upload`;
+    if(uploadIssue==='signin') text+=', sign in again';
+    else if(uploadIssue==='denied') text+=', not permitted (check the captures API rules)';
+    else if(uploadIssue==='offline') text+=', no connection';
+    else if(failed) text+=`, ${failed} failed`;
+  }
+  const badge=document.getElementById('queue-badge');
+  if(badge){badge.textContent=text;badge.style.display=n?'inline-block':'none';badge.classList.toggle('is-issue',!!(uploadIssue||failed));}
+  const cap=document.getElementById('cap-queue');
+  if(cap){
+    cap.innerHTML=n
+      ?`<span class="cap-queue-text">${escHtml(text)}</span><button class="cap-btn" onclick="processQueue()">Retry now</button><button class="cap-btn" onclick="saveWaitingPhotos()">${sharePrepared?`Share ${sharePrepared.length} photo${sharePrepared.length===1?'':'s'}`:'Save waiting photos'}</button>`
+      :'<span class="cap-queue-ok">✓ All photos uploaded</span>';
+  }
+  const note=document.getElementById('login-queue-note');
+  if(note){note.textContent=n?`${n} photo${n===1?'':'s'} on this device waiting to upload. Sign in to send ${n===1?'it':'them'}.`:'';note.style.display=n?'block':'none';}
+}
+
+// Two taps: the first prepares the files, the second opens the iPad share sheet (Save to Files, AirDrop)
+async function saveWaitingPhotos(){
+  if(sharePrepared) return shareWaitingPhotos();
+  let q=[];try{q=await qAll();}catch(e){}
+  if(!q.length) return;
+  const files=q.map(r=>new File([r.data],r.filename,{type:r.type||'image/jpeg'}));
+  if(navigator.canShare&&navigator.canShare({files})){sharePrepared=files;updateQueueBadge();return;}
+  files.forEach(f=>{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},4000);});
+}
+async function shareWaitingPhotos(){
+  const files=sharePrepared;sharePrepared=null;updateQueueBadge();
+  try{await navigator.share({files});}
+  catch(e){if(e.name!=='AbortError') alert('Could not open the share sheet: '+e.message);}
+}
+
+// ---- Capture screen
+function saveCapState(){if(!currentEngagement)return;try{sessionStorage.setItem('held-cap-'+currentEngagement.id,JSON.stringify(capState));}catch(e){}}
+function loadCapState(){
+  let s=null;try{s=JSON.parse(sessionStorage.getItem('held-cap-'+currentEngagement.id)||'null');}catch(e){}
+  capState=Object.assign({room:'',kind:'room_area',label:'',group:null},s||{});
+}
+
+async function openCapture(){
+  if(!currentEngagement) return;
+  document.getElementById('items-screen').style.display='none';
+  document.getElementById('export-bar').style.display='none';
+  document.getElementById('capture-screen').style.display='block';
+  document.getElementById('cap-eng').textContent=currentEngagement.client_code;
+  saveSession('capture');
+  if(navigator.storage&&navigator.storage.persist){try{navigator.storage.persist();}catch(e){}}
+  loadCapState();
+  capRooms=new Set((allItems||[]).map(i=>i.room).filter(Boolean));
+  if(capState.room) capRooms.add(capState.room);
+  capCounts={};
+  renderCapture();renderRecent();
+  let queue=[];
+  try{queue=(await qAll()).filter(r=>r.engagement_id===currentEngagement.id);}catch(e){}
+  let server=[];
+  try{
+    const f=encodeURIComponent(`(engagement_id='${currentEngagement.id}')`);
+    const res=await fetch(`${POCKETBASE_URL}/api/collections/captures/records?filter=${f}&perPage=500&fields=room,label,kind,client_uuid`,{headers:{'Authorization':authToken}});
+    if(res.ok) server=(await res.json()).items||[];
+  }catch(e){}
+  const seen=new Set();
+  [...server,...queue].forEach((c,i)=>{
+    const id=c.client_uuid||('srv'+i);
+    if(seen.has(id)) return; seen.add(id);
+    capRooms.add(c.room);
+    const k=`${c.room}|${slugify(c.label)||KIND_SLUGS[c.kind]}`;
+    capCounts[k]=(capCounts[k]||0)+1;
+  });
+  queue.forEach(r=>{
+    if(!capRecent.some(x=>x.client_uuid===r.client_uuid)){
+      capRecent.push({client_uuid:r.client_uuid,filename:r.filename,engId:r.engagement_id,url:URL.createObjectURL(new Blob([r.data],{type:r.type})),status:r.error?'error':'waiting',msg:r.error||''});
+    }
+  });
+  renderCapture();renderRecent();updateQueueBadge();
+}
+
+function closeCapture(){
+  document.getElementById('capture-screen').style.display='none';
+  document.getElementById('items-screen').style.display='block';
+  document.getElementById('export-bar').style.display='flex';
+  saveSession('items');
+}
+
+function roomOption(c){return `<option value="${escHtml(c)}">${escHtml(c)}${ROOM_NAMES[c]?' · '+escHtml(ROOM_NAMES[c]):''}</option>`;}
+
+function renderCapture(){
+  const st=capState, inGroup=!!st.group;
+  const used=[...capRooms].sort();
+  const std=STANDARD_ROOMS.map(r=>r[0]).filter(c=>!capRooms.has(c));
+  let html='<option value="">Choose a room…</option>';
+  if(used.length) html+=`<optgroup label="In this engagement">${used.map(roomOption).join('')}</optgroup>`;
+  html+=`<optgroup label="Standard rooms">${std.map(roomOption).join('')}</optgroup>`;
+  html+='<option value="__add">+ Add room…</option>';
+  const sel=document.getElementById('cap-room');
+  sel.innerHTML=html;sel.value=st.room||'';sel.disabled=inGroup;
+  document.querySelectorAll('#cap-kinds button').forEach(b=>{b.classList.toggle('active',b.dataset.kind===st.kind);b.disabled=inGroup;});
+  document.getElementById('cap-hint').textContent=KIND_HINTS[st.kind];
+  const lab=document.getElementById('cap-label');
+  lab.placeholder=KIND_PLACEHOLDERS[st.kind];
+  lab.value=inGroup?st.group.label:(st.label||'');
+  lab.disabled=inGroup;
+  document.getElementById('cap-label-title').textContent=st.kind==='item_detail'?'Item name':'Label (optional)';
+  const g=document.getElementById('cap-group');
+  if(inGroup){
+    g.style.display='flex';
+    g.innerHTML=`<div>Photographing <strong>${escHtml(st.group.label)}</strong>: ${st.group.count} photo${st.group.count===1?'':'s'} so far</div><button class="cap-btn" onclick="finishItem()">Done with item</button>`;
+  } else {g.style.display='none';g.innerHTML='';}
+  document.getElementById('cap-shoot').textContent=inGroup?'Take another photo of this item':'Take photo';
+}
+
+function renderRecent(){
+  const el=document.getElementById('cap-recent');if(!el) return;
+  const list=capRecent.filter(r=>currentEngagement&&r.engId===currentEngagement.id);
+  if(!list.length){el.innerHTML='<div class="cap-empty">Photos you take appear here.</div>';return;}
+  el.innerHTML=list.map(r=>`<div class="cap-shot"><img src="${r.url}" alt=""><div class="cap-shot-name">${escHtml(r.filename)}</div><div class="cap-shot-status s-${r.status}" title="${escHtml(r.msg||'')}">${r.status==='uploaded'?'Uploaded':r.status==='error'?'Failed: '+escHtml(r.msg||''):'Waiting to upload'}</div></div>`).join('');
+}
+function setRecentStatus(id,status,msg){const r=capRecent.find(x=>x.client_uuid===id);if(r){r.status=status;r.msg=msg||'';renderRecent();}}
+
+function onRoomChange(val){
+  if(val==='__add'){addRoom();return;}
+  capState.room=val;saveCapState();
+}
+function nextRoomCode(code){
+  if(/\d$/.test(code)) return code;
+  const known=new Set([...capRooms,...STANDARD_ROOMS.map(r=>r[0])]);
+  const re=new RegExp('^'+code+'(\\d*)$');
+  let max=0;
+  known.forEach(c=>{const m=c.match(re);if(m) max=Math.max(max,m[1]?parseInt(m[1],10):1);});
+  return max?code+(max+1):code;
+}
+function addRoom(){
+  const raw=prompt('New room code, e.g. OUT, BD or LIB.\nIf that room type is already in use, the next free number is added for you (OUT becomes OUT2).','');
+  let code=(raw||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8);
+  if(!code){renderCapture();return;}
+  code=nextRoomCode(code);
+  capRooms.add(code);capState.room=code;saveCapState();renderCapture();
+}
+function setKind(k){if(capState.group) return;capState.kind=k;saveCapState();renderCapture();}
+function onLabelInput(v){if(capState.group) return;capState.label=v;saveCapState();}
+function finishItem(){capState.group=null;capState.label='';saveCapState();renderCapture();}
+
+function takePhoto(){
+  const st=capState;
+  if(!st.room){alert('Choose a room first.');return;}
+  if(st.kind==='item_detail'&&!st.group){
+    const label=document.getElementById('cap-label').value.trim();
+    if(!label){alert('Name the item first, for example "Sub-Zero refrigerator".');document.getElementById('cap-label').focus();return;}
+    st.group={id:newUuid(),label,count:0};saveCapState();renderCapture();
+  }
+  document.getElementById('cap-input').click();
+}
+
+async function handleCapture(ev){
+  const input=ev.target;const files=[...(input.files||[])];input.value='';
+  if(!files.length||!currentEngagement) return;
+  for(const file of files){
+    const st=capState;
+    const label=st.kind==='item_detail'&&st.group?st.group.label:(st.label||'').trim();
+    const slug=slugify(label)||KIND_SLUGS[st.kind];
+    const key=`${st.room}|${slug}`;
+    const seq=(capCounts[key]||0)+1;
+    const filename=`${st.room.toLowerCase()}_${slug}_${String(seq).padStart(2,'0')}.${extFor(file)}`;
+    let data;
+    try{data=await file.arrayBuffer();}catch(e){alert('The photo could not be read: '+e.message);continue;}
+    const rec={client_uuid:newUuid(),engagement_id:currentEngagement.id,room:st.room,kind:st.kind,label,
+      detail_group:st.group?st.group.id:'',captured_by:currentUser?currentUser.id:'',filename,type:file.type||'image/jpeg',data,created:Date.now()};
+    try{await qPut(rec);}catch(e){alert('This photo could not be saved on the iPad: '+e.message);continue;}
+    capCounts[key]=seq;
+    if(st.group) st.group.count++;
+    capRooms.add(st.room);
+    capRecent.unshift({client_uuid:rec.client_uuid,filename,engId:rec.engagement_id,url:URL.createObjectURL(file),status:'waiting'});
+    while(capRecent.length>40){const r=capRecent.pop();URL.revokeObjectURL(r.url);}
+  }
+  saveCapState();renderCapture();renderRecent();
+  await updateQueueBadge();
+  processQueue();
+}
+
+setInterval(()=>processQueue(),20000);
+window.addEventListener('online',()=>processQueue());
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')processQueue();});
+updateQueueBadge();
+restoreSession();
 </script>
 </body>
 </html>
