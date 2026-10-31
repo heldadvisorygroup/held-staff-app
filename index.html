@@ -254,6 +254,8 @@
   .cap-shot-status { font-size: 11px; padding: 2px 8px 8px; color: var(--ink-mid); }
   .cap-shot-status.s-uploaded { color: #4F7F78; }
   .cap-shot-status.s-error { color: #8B3A3A; }
+  .cap-shot-meta { font-size: 12px; color: var(--ink); padding: 8px 8px 0; }
+  .cap-tile-edit { display: block; width: calc(100% - 16px); margin: 0 8px 8px; font-family: var(--font-body); font-size: 13px; padding: 7px; background: var(--white); color: var(--ink); border: 1px solid var(--border-strong); cursor: pointer; }
   .cap-empty { font-size: 14px; color: var(--ink-soft); font-style: italic; }
   @media (max-width: 700px) { .cap-kinds { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 640px) { .cap-kinds button { font-size: 13px; } .cap-title { font-size: 22px; } }
@@ -402,6 +404,7 @@
       </div>
       <div class="cap-row"><label for="cap-label" id="cap-label-title">Label (optional)</label><input type="text" id="cap-label" autocomplete="off" autocapitalize="sentences" oninput="onLabelInput(this.value)"></div>
       <div class="cap-group" id="cap-group" style="display:none;"></div>
+      <div class="cap-hint" style="margin-top:-6px;">These settings apply to the next photo. To correct a photo already taken, use Edit under This visit.</div>
       <button type="button" class="cap-shoot" id="cap-shoot" onclick="takePhoto()">Take photo</button>
       <input type="file" id="cap-input" accept="image/*" capture="environment" style="display:none;" onchange="handleCapture(event)">
       <input type="file" id="cap-input-file" accept="image/jpeg,image/png" style="display:none;" onchange="handleCapture(event)">
@@ -458,6 +461,20 @@
       <div class="wt-tabs" id="pv-tabs"></div>
       <div class="wt-pv-photo"><img id="pv-img" alt=""></div>
       <div class="wt-pv-cap" id="pv-cap"></div>
+    </div>
+  </div>
+
+  <div class="wt-scrim" id="cap-edit" onclick="if(event.target===this)closeCapEdit()">
+    <div class="wt-panel" role="dialog" aria-modal="true" aria-labelledby="ce-title" style="width:min(560px,100%);">
+      <div class="wt-panel-head"><div class="wt-panel-title" id="ce-title">Edit photo details</div><button class="cap-btn" onclick="closeCapEdit()">Close</button></div>
+      <div class="wt-panel-body">
+        <div class="cap-shot-name" id="ce-file" style="padding:0;"></div>
+        <div><label for="ce-room">Room</label><select id="ce-room"></select></div>
+        <div><label for="ce-kind">Kind of photo</label><select id="ce-kind"><option value="room_area">Room area</option><option value="open_storage">Open storage</option><option value="item_detail">Item detail</option><option value="room_360">Room 360</option></select></div>
+        <div><label for="ce-label">Label</label><input type="text" id="ce-label"></div>
+        <div class="cap-hint">The stored file name keeps its original room code. The room and label used in the walkthrough and the inventory come from these details.</div>
+      </div>
+      <div class="wt-panel-foot"><div></div><div><button class="cap-btn" onclick="closeCapEdit()">Cancel</button><button class="cap-btn primary" onclick="saveCapEdit()">Save</button></div></div>
     </div>
   </div>
 
@@ -1217,6 +1234,7 @@ const STANDARD_ROOMS=[
 ];
 const ROOM_NAMES=Object.fromEntries(STANDARD_ROOMS);
 const KIND_SLUGS={room_area:'area',open_storage:'open',item_detail:'detail',room_360:'360'};
+const KIND_LABELS={room_area:'Room area',open_storage:'Open storage',item_detail:'Item detail',room_360:'Room 360'};
 const KIND_HINTS={
   room_area:'One wall or area of the room per photo.',
   open_storage:'Open the dresser, closet or cabinet fully, then take one photo.',
@@ -1315,7 +1333,7 @@ async function processQueue(){
       let res;
       try{res=await fetch(`${POCKETBASE_URL}/api/collections/captures/records`,{method:'POST',headers:{'Authorization':authToken},body:fd});}
       catch(e){uploadIssue='offline';break;}
-      if(res.ok){await qDelete(rec.client_uuid);setRecentStatus(rec.client_uuid,'uploaded');continue;}
+      if(res.ok){let saved={};try{saved=await res.json();}catch(e){}await qDelete(rec.client_uuid);setRecentStatus(rec.client_uuid,'uploaded','',saved.id);continue;}
       if(res.status===401){uploadIssue='signin';break;}
       if(res.status===403){uploadIssue='denied';break;}
       if(res.status>=500){uploadIssue='offline';break;}
@@ -1405,7 +1423,7 @@ async function openCapture(){
   });
   queue.forEach(r=>{
     if(!capRecent.some(x=>x.client_uuid===r.client_uuid)){
-      capRecent.push({client_uuid:r.client_uuid,filename:r.filename,engId:r.engagement_id,url:URL.createObjectURL(new Blob([r.data],{type:r.type})),status:r.error?'error':'waiting',msg:r.error||''});
+      capRecent.push({client_uuid:r.client_uuid,filename:r.filename,engId:r.engagement_id,room:r.room,kind:r.kind,label:r.label||'',url:URL.createObjectURL(new Blob([r.data],{type:r.type})),status:r.error?'error':'waiting',msg:r.error||''});
     }
   });
   renderCapture();renderRecent();updateQueueBadge();
@@ -1442,16 +1460,16 @@ function renderCapture(){
     g.style.display='flex';
     g.innerHTML=`<div>Photographing <strong>${escHtml(st.group.label)}</strong>: ${st.group.count} photo${st.group.count===1?'':'s'} so far</div><button class="cap-btn" onclick="finishItem()">Done with item</button>`;
   } else {g.style.display='none';g.innerHTML='';}
-  document.getElementById('cap-shoot').textContent=inGroup?'Take another photo of this item':(st.kind==='room_360'?'Choose 360 image':'Take photo');
+  document.getElementById('cap-shoot').textContent=inGroup?'Take another photo of this item':(st.kind==='room_360'?'Choose 360 image':'Take photo')+(st.room?(st.kind==='room_360'?' for ':' in ')+st.room:'');
 }
 
 function renderRecent(){
   const el=document.getElementById('cap-recent');if(!el) return;
   const list=capRecent.filter(r=>currentEngagement&&r.engId===currentEngagement.id);
   if(!list.length){el.innerHTML='<div class="cap-empty">Photos you take appear here.</div>';return;}
-  el.innerHTML=list.map(r=>`<div class="cap-shot"><img src="${r.url}" alt=""><div class="cap-shot-name">${escHtml(r.filename)}</div><div class="cap-shot-status s-${r.status}" title="${escHtml(r.msg||'')}">${r.status==='uploaded'?'Uploaded':r.status==='error'?'Failed: '+escHtml(r.msg||''):'Waiting to upload'}</div></div>`).join('');
+  el.innerHTML=list.map(r=>`<div class="cap-shot"><img src="${r.url}" alt=""><div class="cap-shot-meta">${escHtml((r.room||'')+(r.kind?' · '+(KIND_LABELS[r.kind]||r.kind):'')+(r.label?', '+r.label:''))}</div><div class="cap-shot-name">${escHtml(r.filename)}</div><div class="cap-shot-status s-${r.status}" title="${escHtml(r.msg||'')}">${r.status==='uploaded'?'Uploaded':r.status==='error'?'Failed: '+escHtml(r.msg||''):'Waiting to upload'}</div><button type="button" class="cap-tile-edit" onclick="openCapEdit('${r.client_uuid}')">Edit</button></div>`).join('');
 }
-function setRecentStatus(id,status,msg){const r=capRecent.find(x=>x.client_uuid===id);if(r){r.status=status;r.msg=msg||'';renderRecent();}}
+function setRecentStatus(id,status,msg,recordId){const r=capRecent.find(x=>x.client_uuid===id);if(r){r.status=status;r.msg=msg||'';if(recordId)r.recordId=recordId;renderRecent();}}
 
 function onRoomChange(val){
   if(val==='__add'){addRoom();return;}
@@ -1505,7 +1523,7 @@ async function handleCapture(ev){
     capCounts[key]=seq;
     if(st.group) st.group.count++;
     capRooms.add(st.room);
-    capRecent.unshift({client_uuid:rec.client_uuid,filename,engId:rec.engagement_id,url:URL.createObjectURL(file),status:'waiting'});
+    capRecent.unshift({client_uuid:rec.client_uuid,filename,engId:rec.engagement_id,room:rec.room,kind:rec.kind,label:rec.label||'',url:URL.createObjectURL(file),status:'waiting'});
     while(capRecent.length>40){const r=capRecent.pop();URL.revokeObjectURL(r.url);}
   }
   saveCapState();renderCapture();renderRecent();
@@ -1742,6 +1760,47 @@ function pvShow(i){
 }
 function closePreview(){document.getElementById('wt-preview').classList.remove('open');}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePreview();if(wtPlacing){cancelPlacing();wtStatus('');}}});
+
+// ---- Correct the details of a photo already taken (queued on the iPad or uploaded)
+let capEditing=null;
+function openCapEdit(uuid){
+  const r=capRecent.find(x=>x.client_uuid===uuid);if(!r) return;
+  capEditing=r;
+  const used=[...capRooms].sort(), std=STANDARD_ROOMS.map(x=>x[0]).filter(c=>!capRooms.has(c));
+  let html=(used.length?`<optgroup label="In this engagement">${used.map(roomOption).join('')}</optgroup>`:'')+`<optgroup label="Standard rooms">${std.map(roomOption).join('')}</optgroup>`;
+  if(r.room&&!used.includes(r.room)&&!std.includes(r.room)) html=roomOption(r.room)+html;
+  const sel=document.getElementById('ce-room');sel.innerHTML=html;sel.value=r.room||'';
+  document.getElementById('ce-kind').value=r.kind||'room_area';
+  document.getElementById('ce-label').value=r.label||'';
+  document.getElementById('ce-file').textContent=r.filename;
+  document.getElementById('cap-edit').classList.add('open');
+}
+function closeCapEdit(){document.getElementById('cap-edit').classList.remove('open');capEditing=null;}
+async function saveCapEdit(){
+  const r=capEditing;if(!r) return;
+  const room=document.getElementById('ce-room').value, kind=document.getElementById('ce-kind').value, label=document.getElementById('ce-label').value.trim();
+  try{
+    let queued=null;try{queued=(await qAll()).find(x=>x.client_uuid===r.client_uuid);}catch(e){}
+    if(queued){
+      queued.room=room;queued.kind=kind;queued.label=label;await qPut(queued);
+    } else {
+      let id=r.recordId;
+      if(!id){
+        const f=encodeURIComponent(`(client_uuid='${r.client_uuid}')`);
+        const res=await fetch(`${POCKETBASE_URL}/api/collections/captures/records?filter=${f}&fields=id&perPage=1`,{headers:{'Authorization':authToken}});
+        const d=await res.json().catch(()=>({}));id=(d.items&&d.items[0]&&d.items[0].id)||null;
+      }
+      if(!id) throw new Error('this photo could not be found in PocketBase. Check the connection and try again.');
+      const res=await fetch(`${POCKETBASE_URL}/api/collections/captures/records/${id}`,{method:'PATCH',headers:{'Authorization':authToken,'Content-Type':'application/json'},body:JSON.stringify({room,kind,label})});
+      const d=await res.json().catch(()=>({}));
+      if(!res.ok) throw new Error(d.message||('HTTP '+res.status));
+      r.recordId=id;
+      if(d.parsed) alert('Saved. This photo had already been parsed, so items created from it keep their previous room. Update those items in the item list if needed.');
+    }
+    r.room=room;r.kind=kind;r.label=label;capRooms.add(room);
+    closeCapEdit();renderCapture();renderRecent();
+  }catch(e){alert('Could not save the change: '+e.message);}
+}
 </script>
 </body>
 </html>
