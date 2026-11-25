@@ -52,7 +52,7 @@
   .login-error { color: var(--red); font-size: 12px; margin-top: 12px; display: none; font-style: italic; }
 
   /* Buttons */
-  .btn { display: inline-block; padding: 11px 28px; font-family: var(--font-body); font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; border: none; transition: all 0.18s; }
+  .btn { display: inline-block; text-decoration: none; padding: 11px 28px; font-family: var(--font-body); font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; border: none; transition: all 0.18s; }
   .btn-primary { background: var(--ink); color: var(--bg); }
   .btn-primary:hover { background: var(--teal); color: var(--white); }
   .btn-full { width: 100%; text-align: center; }
@@ -103,6 +103,31 @@
   .loading, .empty-state { text-align: center; padding: 48px; color: var(--ink-soft); font-style: italic; }
   .empty-state h3 { font-family: var(--font-display); font-size: 24px; font-weight: 400; margin-bottom: 8px; color: var(--ink); font-style: normal; }
 
+  /* Detail view */
+  #detail-screen { display: none; }
+  .detail-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .detail-title { font-family: var(--font-display); font-size: 34px; line-height: 1.1; margin-bottom: 6px; }
+  .detail-meta { font-size: 13px; color: var(--ink-mid); }
+  .detail-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .draft-note { background: rgba(237,252,78,0.25); border-left: 3px solid var(--lime); padding: 12px 16px; font-size: 13px; margin-bottom: 20px; }
+  .ans-card { background: var(--white); border: 1px solid var(--border); margin-bottom: 18px; break-inside: avoid; }
+  .ans-head { padding: 14px 22px 12px; border-bottom: 1px solid var(--border); font-family: var(--font-display); font-size: 19px; }
+  .ans-body { padding: 4px 22px 8px; }
+  .ans-row { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 18px; padding: 10px 0; border-bottom: 1px solid rgba(71,72,56,0.08); font-size: 13px; }
+  .ans-row:last-child { border-bottom: none; }
+  .ans-q { color: var(--ink-mid); line-height: 1.5; }
+  .ans-a { color: var(--ink); font-weight: 400; line-height: 1.5; }
+  .ans-a ul { margin: 0; padding-left: 16px; }
+  .ans-empty { color: var(--ink-soft); font-style: italic; font-weight: 300; }
+  .ans-a .pill { display: inline-block; background: rgba(237,252,78,0.35); padding: 0 6px; margin-left: 6px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+  @media print {
+    .app-header, .detail-actions, .btn-back, .toast { display: none !important; }
+    body { background: #fff; }
+    main { padding: 0; max-width: none; }
+    .ans-card { border-color: #ccc; }
+  }
+
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 18px; font-size: 13px; opacity: 0; transition: opacity 0.25s; pointer-events: none; z-index: 300; }
   .toast.show { opacity: 1; }
 
@@ -144,7 +169,23 @@
     </div>
   </header>
 
-  <main>
+  <main id="detail-screen">
+    <button class="btn btn-outline btn-back" onclick="showList()" style="margin-bottom:24px;">← All intakes</button>
+    <div class="detail-top">
+      <div>
+        <div class="screen-label">Consultation intake</div>
+        <div class="detail-title" id="detail-title"></div>
+        <div class="detail-meta" id="detail-meta"></div>
+      </div>
+      <div class="detail-actions">
+        <button class="btn btn-outline" onclick="window.print()">Print</button>
+        <a class="btn btn-outline" id="detail-pb-link" href="#" target="_blank" rel="noopener">Raw record in PocketBase</a>
+      </div>
+    </div>
+    <div id="detail-body"><div class="loading">Loading…</div></div>
+  </main>
+
+  <main id="list-screen">
     <div class="screen-label">Staff Portal · Admin</div>
     <div class="screen-title">Consultation Intakes</div>
 
@@ -298,6 +339,9 @@ function enterApp() {
   document.getElementById('app').style.display = 'block';
   document.getElementById('consult-date').value = todayLA();
   loadIntakes();
+  // Opened from the notification email: go straight to that intake's answers
+  const linked = new URLSearchParams(window.location.search).get('code');
+  if (linked) openDetail(linked);
 }
 
 function resetLoginForm() {
@@ -312,6 +356,8 @@ function doLogout() {
   try { sessionStorage.removeItem('held-consult-session'); } catch (e) {}
   document.getElementById('app').style.display = 'none';
   document.getElementById('start-result').style.display = 'none';
+  document.getElementById('detail-screen').style.display = 'none';
+  document.getElementById('list-screen').style.display = 'block';
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('login-email').value = '';
   resetLoginForm();
@@ -415,9 +461,11 @@ async function loadIntakes() {
         ? `Consultation ${rec.consultation_date || '—'} · submitted ${rec.submitted_at || '—'}`
         : `Consultation ${rec.consultation_date || '—'} · at step ${Math.min(rec.current_step + 1, TOTAL_STEPS)} of ${TOTAL_STEPS}`;
       const code = escHtml(rec.engagement_code);
+      const read = `<button class="btn btn-outline" onclick="openDetail('${code}')">Read answers</button>`;
       const actions = submitted
-        ? `<a class="btn btn-outline" href="${PB_URL}/_/#/collections?collection=screening_intakes&recordId=${encodeURIComponent(rec.id)}" target="_blank" rel="noopener">View in PocketBase</a>`
-        : `<button class="btn btn-outline" onclick="openDraft('${code}')">Open form</button>
+        ? read
+        : `${read}
+           <button class="btn btn-outline" onclick="openDraft('${code}')">Open form</button>
            <button class="btn btn-outline" onclick="copyDraftLink('${code}')">Copy client link</button>`;
       return `<div class="intake-card">
         <div><div class="intake-code">${code || '(no code)'}</div><div class="intake-meta">${escHtml(meta)}</div></div>
@@ -432,6 +480,198 @@ async function loadIntakes() {
       listEl.innerHTML = `<div class="empty-state"><h3>Could not load</h3><p>${escHtml(e.message)}</p></div>`;
     }
   }
+}
+
+// ═══ READABLE VIEW ═══
+// Question wording and answer labels, mirroring the intake form.
+const OPTIONS = {
+  time_away: { rarely: 'Rarely', few_weeks: 'A few weeks', several_months: 'Several months', secondary_residence: "It's a secondary residence" },
+  staff_roles: { estate_manager: 'Estate or house manager', housekeeper: 'Housekeeper', nanny: 'Nanny', gardener: 'Gardener', chef: 'Chef',
+    driver: 'Driver', security: 'Security', assistant: 'Personal assistant', other: 'Other', none: 'No household staff' },
+  in_charge_when_away: { estate_manager: 'Estate or house manager', other_staff: 'Another member of staff', family_friend: 'A family member or friend',
+    no_one: 'No one formally', home_empty: 'The home stays empty' },
+  other_advisors: { insurance_broker: 'Insurance broker', family_office: 'Family office', business_manager: 'Business manager', attorney: 'Attorney',
+    art_advisor: 'Art advisor', none: 'None of these' },
+  backup_power: { whole_house_generator: 'Whole-house generator', portable_generator: 'Portable generator', battery_system: 'Home battery system',
+    small_battery_packs: 'Small battery packs for phones and lights' },
+  past_events: { wildfire_evacuation: 'Wildfire evacuation order or warning', power_shutoff: 'Power shutoff lasting more than a day',
+    water_leak: 'Water leak or flooding inside the home', earthquake_damage: 'Earthquake damage', storm_mudslide: 'Storm damage, mudslide or erosion',
+    none: 'None of these' },
+  collection_locations: { main_residence: 'In the main residence', other_building: 'In another building on the property', offsite_storage: 'In off-site storage' },
+  collection_records: { maintained_list: 'One list or database kept up to date', family_office: 'With the family office or an advisor',
+    invoices_appraisals: 'Purchase invoices and appraisals', phone_photos: 'Photos on phones', scattered: 'Spread across several places',
+    none: 'No records yet' },
+  roles_known: { yes: 'Yes', some: 'Some do', no: 'No' },
+  utility_shutoff_knowledge: { all_adults: 'All adults in the household', one_person: 'One person', staff_only: 'Only staff', not_sure: 'Not sure' },
+  go_bags: { yes_checked: 'Yes, checked in the past year', yes_not_checked: 'Yes, but not checked recently', partial: 'Partly', no: 'No' },
+  emergency_supplies: { organized: 'Yes, organized and checked regularly', some: 'Some, not organized', no: 'No' },
+  vehicle_kit: { yes_checked: 'Yes, checked in the past year', yes_not_checked: 'Yes, but not checked recently', no: 'No' },
+  sustain_days: { under_24h: 'Less than a day', '1_3_days': '1–3 days', '3_7_days': '3–7 days', '7_14_days': '1–2 weeks', '14_plus_days': 'More than 2 weeks' },
+  yes_partial_none: { yes: 'Yes', partial: 'Partly', none: 'No' },
+  doc_location: { printed_one_place: 'Printed copies in one place', one_email: 'One email account', multiple_emails: 'Several email accounts',
+    accounting_system: 'An accounting or bookkeeping system', family_office: 'With the family office or an advisor', scattered: 'Spread across several places' },
+  motivation: { jan_2025_fires: 'The January 2025 fires', insurer_recommendation: 'A recommendation from their insurer or broker',
+    recent_incident: 'A recent incident at home', new_home_renovation: 'A new home or renovation', collection_grown: 'Their collection has grown',
+    peace_of_mind: 'Peace of mind', other: 'Other' },
+  priorities: { family_safety: 'The safety of everyone at home, including children, elders and pets',
+    safety_while_traveling: "The household's safety while they're traveling", staff_ready: 'Staff who know what to do without waiting for a call',
+    protect_collection: 'Protecting the collection, or particular works in it', safe_evacuation: 'Getting everyone out safely if they have to leave',
+    power_shutoffs: 'Getting through power shutoffs at home', complete_records: 'Complete, current records of what they own',
+    records_for_advisors: 'Records the family office or advisors can rely on and keep current',
+    single_coordinator: 'One point of contact coordinating specialists and vendors', protect_home: 'Protecting the home itself' },
+};
+const COLLECTION_LABELS = {
+  paintings: 'Paintings', works_on_paper: 'Works on paper', sculpture: 'Sculpture', ceramics_glass: 'Ceramics and glass',
+  textiles_rugs: 'Textiles and rugs', furniture_decorative: 'Furniture and decorative arts', books_manuscripts: 'Books and manuscripts',
+  jewelry_watches: 'Jewelry and watches', wine: 'Wine', other: 'Other',
+};
+const BANDS = { '1_10': '1–10', '11_50': '11–50', '51_100': '51–100', '100_plus': 'More than 100' };
+
+// [field, question, kind, options key]. kind: text | bool | choice | multi | ages | pets | counts | top
+const SECTIONS_SPEC = [
+  { title: 'Your household', rows: [
+    ['zip_code', 'ZIP code of the primary residence', 'text'],
+    ['other_residences', 'Other residences', 'bool'],
+    ['num_adults', 'Adults living in the home', 'text'],
+    ['num_children', 'Children living in the home', 'text'],
+    ['children_ages', "Children's ages", 'ages'],
+    ['has_regular_visitors', 'Someone stays regularly or for part of the year', 'bool'],
+    ['time_away', 'How much of the year the home is without them', 'choice'],
+    ['staff_roles', 'Who works in the home', 'multi'],
+    ['staff_live_in', 'Staff living on the property', 'bool'],
+    ['in_charge_when_away', 'Who is in charge at home when they are away', 'choice'],
+    ['has_pets', 'Pets', 'bool'],
+    ['pets', 'Pets in the household', 'pets'],
+    ['primary_language', 'Language mostly spoken at home', 'text'],
+    ['other_advisors', 'Who else supports the household', 'multi'],
+  ]},
+  { title: 'Getting everyone out safely', rows: [
+    ['needs_evac_assistance', 'Someone would need help to leave quickly', 'bool'],
+    ['medical_equipment', 'Someone relies on medical equipment that needs power', 'bool'],
+  ]},
+  { title: 'Their home', rows: [
+    ['has_backup_power', 'Backup power', 'bool'],
+    ['backup_power', 'Kind of backup power', 'multi'],
+    ['past_events', 'Affected in the past 10 years by', 'multi'],
+  ]},
+  { title: 'Their collection', rows: [
+    ['considers_collection', 'They consider what they own a collection', 'bool'],
+    ['collection_counts', 'What it includes, roughly', 'counts'],
+    ['collection_other_desc', 'Other, described', 'text'],
+    ['collection_locations', 'Where the collection is kept', 'multi'],
+    ['collection_records', 'Where the records for the collection live', 'multi'],
+    ['collection_emergency_materials', 'Something set aside to protect or move works in an emergency', 'bool'],
+  ]},
+  { title: 'Being prepared', rows: [
+    ['evac_plan', 'Written emergency plan', 'bool'],
+    ['roles_known', 'Everyone, including staff, knows what they would do', 'choice'],
+    ['utility_shutoff_knowledge', 'Who knows how to shut off gas, water and electricity', 'choice'],
+    ['ooa_contact', 'Agreed contact outside the area for emergencies', 'bool'],
+    ['meeting_point', 'Agreed place to meet if separated', 'bool'],
+    ['go_bags', 'Go-bags ready', 'choice'],
+    ['emergency_supplies', 'Emergency supplies (water, food, first aid)', 'choice'],
+    ['vehicle_kit', 'Vehicle emergency kits', 'choice'],
+    ['sustain_days', 'How long they could stay at home without power and water', 'choice'],
+  ]},
+  { title: 'Records and documents', rows: [
+    ['home_inventory', "Inventory of the home's contents", 'choice', 'yes_partial_none'],
+    ['asset_docs', 'Photos or video of valuable items', 'choice', 'yes_partial_none'],
+    ['receipts', 'Receipts for major purchases', 'choice', 'yes_partial_none'],
+    ['appraisals_current', 'Appraisals from the last two years', 'choice', 'yes_partial_none'],
+    ['doc_location', 'Where important documents live today', 'choice'],
+    ['important_docs_digital', 'Important documents saved digitally', 'choice', 'yes_partial_none'],
+  ]},
+  { title: 'What matters to them', rows: [
+    ['motivation', "What's prompting them to look at this now", 'multi'],
+    ['priorities', 'What matters most', 'multi'],
+    ['top_priority', 'The one that matters most', 'top'],
+    ['notes', 'In their own words', 'text'],
+  ]},
+];
+
+const EMPTY = '<span class="ans-empty">Not answered</span>';
+function label(key, value) { return (OPTIONS[key] && OPTIONS[key][value]) || value; }
+function listHtml(items) { return items.length ? `<ul>${items.map(i => `<li>${escHtml(i)}</li>`).join('')}</ul>` : EMPTY; }
+
+function answerHtml(a, row) {
+  const [key, , kind, optKey] = row;
+  const v = a[key];
+  switch (kind) {
+    case 'bool': return typeof v === 'boolean' ? (v ? 'Yes' : 'No') : EMPTY;
+    case 'choice': return v ? escHtml(label(optKey || key, v)) : EMPTY;
+    case 'top': return v ? escHtml(label('priorities', v)) : EMPTY;
+    case 'multi': return Array.isArray(v) ? listHtml(v.map(x => label(key, x))) : EMPTY;
+    case 'ages': return Array.isArray(v) && v.length ? escHtml(v.join(', ')) : EMPTY;
+    case 'pets': return Array.isArray(v) && v.length ? listHtml(v.map(p => (p.count ? `${p.count} × ` : '') + p.type)) : EMPTY;
+    case 'counts': {
+      const entries = Object.entries(v || {});
+      return entries.length ? listHtml(entries.map(([c, b]) => `${COLLECTION_LABELS[c] || c}: ${BANDS[b] || b}`)) : EMPTY;
+    }
+    default: return (v === undefined || v === null || v === '') ? EMPTY : escHtml(v).replace(/\n/g, '<br>');
+  }
+}
+
+// Rows that only make sense after a "yes" are left out when the answer was "no"
+function rowApplies(a, key) {
+  if (key === 'children_ages') return (a.num_children || 0) > 0;
+  if (key === 'staff_live_in') return a.has_staff === true;
+  if (key === 'pets') return a.has_pets === true;
+  if (key === 'backup_power') return a.has_backup_power === true;
+  if (['collection_counts', 'collection_locations', 'collection_records', 'collection_emergency_materials'].includes(key)) return a.considers_collection === true;
+  if (key === 'collection_other_desc') return a.considers_collection === true && !!(a.collection_counts || {}).other;
+  return true;
+}
+
+function renderDetail(d) {
+  const a = d.answers || {};
+  const submitted = d.status === 'submitted';
+  document.getElementById('detail-title').textContent = d.engagement_code;
+  document.getElementById('detail-meta').textContent = submitted
+    ? `Consultation ${d.consultation_date || '—'} · submitted ${d.submitted_at || '—'}`
+    : `Consultation ${d.consultation_date || '—'} · draft, at step ${Math.min(d.current_step + 1, TOTAL_STEPS)} of ${TOTAL_STEPS}`;
+  document.getElementById('detail-pb-link').href =
+    `${PB_URL}/_/#/collections?collection=screening_intakes&recordId=${encodeURIComponent(d.record_id)}`;
+
+  let html = submitted ? '' : '<div class="draft-note">This intake is still a draft. Answers may change until it is submitted.</div>';
+
+  html += SECTIONS_SPEC.map(sec => {
+    const rows = sec.rows.filter(r => rowApplies(a, r[0]))
+      .map(r => `<div class="ans-row"><div class="ans-q">${escHtml(r[1])}</div><div class="ans-a">${answerHtml(a, r)}</div></div>`)
+      .join('');
+    return `<div class="ans-card"><div class="ans-head">${escHtml(sec.title)}</div><div class="ans-body">${rows}</div></div>`;
+  }).join('');
+
+  const adv = d.advisor || {};
+  const advRow = (q, v) => `<div class="ans-row"><div class="ans-q">${q}</div><div class="ans-a">${v ? escHtml(v) : '<span class="ans-empty">Not filled in yet</span>'}</div></div>`;
+  html += `<div class="ans-card"><div class="ans-head">From public records <span style="font-family:var(--font-body);font-size:12px;color:var(--ink-soft);">· filled in by you in PocketBase</span></div><div class="ans-body">
+    ${advRow('Property type', adv.property_type)}${advRow('Year built', adv.year_built)}${advRow('Garage', adv.has_garage)}
+  </div></div>`;
+
+  document.getElementById('detail-body').innerHTML = html;
+}
+
+async function openDetail(code) {
+  document.getElementById('list-screen').style.display = 'none';
+  document.getElementById('detail-screen').style.display = 'block';
+  document.getElementById('detail-title').textContent = code;
+  document.getElementById('detail-meta').textContent = '';
+  document.getElementById('detail-body').innerHTML = '<div class="loading">Loading…</div>';
+  window.scrollTo(0, 0);
+  try {
+    renderDetail(await api('GET', `/admin/intakes/${encodeURIComponent(code)}/answers`));
+  } catch (e) {
+    if (e.message !== 'Session expired') {
+      document.getElementById('detail-body').innerHTML = `<div class="empty-state"><h3>Could not load</h3><p>${escHtml(e.message)}</p></div>`;
+    }
+  }
+}
+
+function showList() {
+  document.getElementById('detail-screen').style.display = 'none';
+  document.getElementById('list-screen').style.display = 'block';
+  // Drop ?code= so a reload returns to the list
+  if (window.location.search) history.replaceState(null, '', window.location.pathname);
+  loadIntakes();
 }
 
 restoreSession();
