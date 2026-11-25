@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Held Advisory Group — Consultation Intakes</title>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Bitter:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #DEDFCE;
+    --bg-dark:  #CCCDBF;
+    --bg-card:  #E8E9DA;
+    --ink:      #474838;
+    --ink-mid:  #6B6C5A;
+    --ink-soft: #9A9B8A;
+    --sage:     #ABAD9A;
+    --teal:     #86AFA8;
+    --lime:     #EDFC4E;
+    --white:    #FAFAF5;
+    --red:      #8B3A3A;
+    --border:   rgba(71,72,56,0.15);
+    --border-strong: rgba(71,72,56,0.3);
+    --font-display: 'Young Serif', Georgia, serif;
+    --font-body:    'Bitter', Georgia, serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  /* Login */
+  #login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .login-box { width: 100%; max-width: 420px; background: var(--white); border: 1px solid var(--border-strong); padding: 52px 44px 44px; position: relative; }
+  .login-box::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--lime); }
+  .login-logo { font-family: var(--font-display); font-size: 36px; color: var(--ink); margin-bottom: 2px; line-height: 1; }
+  .login-sub { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mid); margin-bottom: 40px; font-weight: 400; }
+  .login-note { font-size: 12px; color: var(--ink-mid); margin-bottom: 20px; line-height: 1.5; }
+  .form-group { margin-bottom: 20px; }
+  .form-group label { display: block; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-mid); margin-bottom: 7px; font-weight: 500; }
+  .form-group input {
+    width: 100%; background: var(--bg); border: 1px solid var(--border-strong); color: var(--ink);
+    padding: 10px 13px; font-family: var(--font-body); font-size: 14px; font-weight: 300; outline: none;
+    transition: border-color 0.2s, background 0.2s; -webkit-appearance: none;
+  }
+  .form-group input:focus { border-color: var(--teal); background: var(--white); }
+  .login-error { color: var(--red); font-size: 12px; margin-top: 12px; display: none; font-style: italic; }
+
+  /* Buttons */
+  .btn { display: inline-block; padding: 11px 28px; font-family: var(--font-body); font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; border: none; transition: all 0.18s; }
+  .btn-primary { background: var(--ink); color: var(--bg); }
+  .btn-primary:hover { background: var(--teal); color: var(--white); }
+  .btn-full { width: 100%; text-align: center; }
+  .btn-lime { background: var(--lime); color: var(--ink); }
+  .btn-lime:hover { background: #d8ec30; }
+  .btn-outline { background: var(--white); border: 1px solid var(--border-strong); color: var(--ink); padding: 7px 14px; font-size: 10px; letter-spacing: 0.1em; }
+  .btn-outline:hover { border-color: var(--ink); }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  /* App */
+  #app { display: none; min-height: 100vh; }
+  .app-header { background: var(--ink); padding: 0 32px; height: 54px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .header-logo { font-family: var(--font-display); font-size: 22px; color: var(--bg); }
+  .header-right { display: flex; align-items: center; gap: 20px; }
+  .header-user { font-size: 12px; color: var(--sage); }
+  .btn-logout { background: none; border: 1px solid rgba(171,173,154,0.4); color: var(--sage); padding: 5px 14px; font-family: var(--font-body); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; }
+  .btn-logout:hover { border-color: var(--bg); color: var(--bg); }
+
+  main { padding: 52px 36px 80px; max-width: 780px; margin: 0 auto; }
+  .screen-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 8px; font-weight: 500; }
+  .screen-title { font-family: var(--font-display); font-size: 38px; color: var(--ink); margin-bottom: 32px; line-height: 1.1; }
+
+  /* Start panel */
+  .start-panel { background: var(--white); border: 1px solid var(--border); padding: 24px; margin-bottom: 36px; position: relative; }
+  .start-panel::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--lime); }
+  .start-title { font-family: var(--font-display); font-size: 20px; margin-bottom: 6px; }
+  .start-hint { font-size: 12px; color: var(--ink-mid); font-style: italic; margin-bottom: 18px; line-height: 1.5; }
+  .start-row { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; }
+  .start-row .form-group { margin-bottom: 0; }
+  .start-row input[type="date"] { width: 190px; }
+  .start-result { margin-top: 20px; padding: 16px 18px; background: var(--bg-card); border-left: 3px solid var(--teal); display: none; }
+  .start-result-code { font-family: var(--font-display); font-size: 22px; margin-bottom: 4px; }
+  .start-result-meta { font-size: 12px; color: var(--ink-mid); margin-bottom: 12px; }
+  .start-result-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .panel-error { color: var(--red); font-size: 12px; font-style: italic; margin-top: 12px; display: none; }
+
+  /* List */
+  .list-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+  .list-title { font-family: var(--font-display); font-size: 22px; }
+  .intake-list { display: flex; flex-direction: column; gap: 10px; }
+  .intake-card { background: var(--white); border: 1px solid var(--border); padding: 18px 22px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .intake-code { font-family: var(--font-display); font-size: 18px; margin-bottom: 3px; }
+  .intake-meta { font-size: 12px; color: var(--ink-soft); font-style: italic; }
+  .intake-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .intake-status { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 10px; font-weight: 500; }
+  .status-submitted { background: rgba(134,175,168,0.2); color: #2D6B63; }
+  .status-draft { background: rgba(71,72,56,0.08); color: var(--ink-mid); }
+  .loading, .empty-state { text-align: center; padding: 48px; color: var(--ink-soft); font-style: italic; }
+  .empty-state h3 { font-family: var(--font-display); font-size: 24px; font-weight: 400; margin-bottom: 8px; color: var(--ink); font-style: normal; }
+
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 18px; font-size: 13px; opacity: 0; transition: opacity 0.25s; pointer-events: none; z-index: 300; }
+  .toast.show { opacity: 1; }
+
+  @media (max-width: 640px) {
+    main { padding: 32px 16px 60px; }
+    .app-header { padding: 0 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="login-screen">
+  <div class="login-box" id="login-box-password">
+    <div class="login-logo">Held</div>
+    <div class="login-sub">Advisory Group &nbsp;·&nbsp; Consultation Intakes</div>
+    <div class="form-group"><label for="login-email">Email</label><input type="email" id="login-email" autocomplete="email"></div>
+    <div class="form-group"><label for="login-password">Password</label><input type="password" id="login-password" autocomplete="current-password"></div>
+    <button class="btn btn-primary btn-full" onclick="doLogin()">Sign In</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+  <div class="login-box" id="login-box-otp" style="display:none;">
+    <div class="login-logo">Held</div>
+    <div class="login-sub">Advisory Group &nbsp;·&nbsp; Verification Code</div>
+    <p class="login-note">We've emailed a one-time code to your address. Enter it below to finish signing in.</p>
+    <div class="form-group"><label for="login-otp-code">Code</label><input type="text" id="login-otp-code" autocomplete="one-time-code" inputmode="numeric"></div>
+    <button class="btn btn-primary btn-full" onclick="submitOtp()">Verify &amp; Sign In</button>
+    <div class="login-error" id="otp-error"></div>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app">
+  <header class="app-header">
+    <div class="header-logo">Held</div>
+    <div class="header-right">
+      <span class="header-user" id="header-user"></span>
+      <button class="btn-logout" onclick="doLogout()">Sign Out</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="screen-label">Staff Portal · Admin</div>
+    <div class="screen-title">Consultation Intakes</div>
+
+    <section class="start-panel">
+      <div class="start-title">Start a consultation intake</div>
+      <div class="start-hint">Creates the engagement code and a private link. Open the form to fill it in during the call, or copy the link to send to the client if you run out of time. Write the address in Proton Pass under the engagement code, never here.</div>
+      <div class="start-row">
+        <div class="form-group">
+          <label for="consult-date">Consultation date</label>
+          <input type="date" id="consult-date">
+        </div>
+        <button class="btn btn-lime" id="btn-start" onclick="startIntake()">Start consultation intake</button>
+      </div>
+      <div class="panel-error" id="start-error"></div>
+
+      <div class="start-result" id="start-result">
+        <div class="start-result-code" id="result-code"></div>
+        <div class="start-result-meta" id="result-meta"></div>
+        <div class="start-result-actions">
+          <button class="btn btn-primary" onclick="openForm(lastLink)">Open form</button>
+          <button class="btn btn-outline" onclick="copyLink(lastLink)">Copy client link</button>
+          <button class="btn btn-outline" onclick="copyText(lastCode, 'Code copied.')">Copy code</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="list-head">
+      <div class="list-title">Intakes</div>
+      <button class="btn btn-outline" onclick="loadIntakes()">Refresh</button>
+    </div>
+    <div id="intake-list" class="intake-list"><div class="loading">Loading…</div></div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const PB_URL = 'https://db.heldadvisorygroup.com';
+const API_URL = 'https://api.heldadvisorygroup.com';
+const TOTAL_STEPS = 8;
+
+let authToken = null, currentUser = null;
+let pendingMfaId = null, pendingOtpId = null;
+let lastLink = '', lastCode = '';
+
+// ═══ HELPERS ═══
+function escHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function todayLA() {
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
+}
+function showToast(text) {
+  const el = document.getElementById('toast');
+  el.textContent = text;
+  el.classList.add('show');
+  clearTimeout(showToast.t);
+  showToast.t = setTimeout(() => el.classList.remove('show'), 2000);
+}
+function showError(id, text) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.style.display = text ? 'block' : 'none';
+}
+
+// Calls the backend with this session's sign-in. Signs out if the session expired.
+async function api(method, path, body) {
+  const res = await fetch(`${API_URL}${path}`, {
+    method,
+    headers: { 'Authorization': `Bearer ${authToken}`, ...(body ? { 'Content-Type': 'application/json' } : {}) },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const data = await res.json().catch(() => ({}));
+  if (res.status === 401) {
+    doLogout();
+    showError('login-error', 'Your session has expired. Please sign in again.');
+    throw new Error('Session expired');
+  }
+  if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+  return data;
+}
+
+// ═══ LOGIN (users collection, with emailed code when MFA is on) ═══
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-password').value;
+  showError('login-error', '');
+  if (!email || !pass) { showError('login-error', 'Please enter your email and password.'); return; }
+  try {
+    const res = await fetch(`${PB_URL}/api/collections/users/auth-with-password`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ identity: email, password: pass }),
+    });
+    const data = await res.json();
+
+    if (res.ok && data.token) { completeLogin(data); return; }
+
+    if (!res.ok && data.mfaId) {
+      pendingMfaId = data.mfaId;
+      const otpRes = await fetch(`${PB_URL}/api/collections/users/request-otp`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const otpData = await otpRes.json();
+      if (!otpRes.ok) throw new Error(otpData.message || 'Could not send the code');
+      pendingOtpId = otpData.otpId;
+      document.getElementById('login-box-password').style.display = 'none';
+      document.getElementById('login-box-otp').style.display = 'block';
+      document.getElementById('login-otp-code').focus();
+      return;
+    }
+    throw new Error(data.message || 'Login failed');
+  } catch (e) {
+    showError('login-error', 'Incorrect email or password. Please try again.');
+  }
+}
+
+async function submitOtp() {
+  const code = document.getElementById('login-otp-code').value.trim();
+  showError('otp-error', '');
+  if (!code) { showError('otp-error', 'Please enter the code from your email.'); return; }
+  try {
+    const res = await fetch(`${PB_URL}/api/collections/users/auth-with-otp`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ otpId: pendingOtpId, password: code, mfaId: pendingMfaId }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Verification failed');
+    completeLogin(data);
+  } catch (e) {
+    showError('otp-error', 'Invalid or expired code. Please try again.');
+  }
+}
+
+function completeLogin(data) {
+  pendingMfaId = null; pendingOtpId = null;
+  if (!data.record || data.record.role !== 'admin') {
+    resetLoginForm();
+    showError('login-error', 'This page is for the admin account only.');
+    return;
+  }
+  authToken = data.token;
+  currentUser = data.record;
+  try { sessionStorage.setItem('held-consult-session', JSON.stringify({ token: authToken, user: currentUser })); } catch (e) {}
+  enterApp();
+}
+
+function enterApp() {
+  document.getElementById('header-user').textContent = currentUser.name || currentUser.email;
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('consult-date').value = todayLA();
+  loadIntakes();
+}
+
+function resetLoginForm() {
+  document.getElementById('login-box-otp').style.display = 'none';
+  document.getElementById('login-box-password').style.display = 'block';
+  document.getElementById('login-password').value = '';
+  document.getElementById('login-otp-code').value = '';
+}
+
+function doLogout() {
+  authToken = null; currentUser = null; lastLink = ''; lastCode = '';
+  try { sessionStorage.removeItem('held-consult-session'); } catch (e) {}
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('start-result').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-email').value = '';
+  resetLoginForm();
+}
+
+// Keeps you signed in through a page reload (cleared when the tab closes)
+async function restoreSession() {
+  let saved = null;
+  try { saved = JSON.parse(sessionStorage.getItem('held-consult-session') || 'null'); } catch (e) {}
+  if (!saved || !saved.token) return;
+  try {
+    const res = await fetch(`${PB_URL}/api/collections/users/auth-refresh`, {
+      method: 'POST', headers: { 'Authorization': saved.token },
+    });
+    if (!res.ok) { sessionStorage.removeItem('held-consult-session'); return; }
+    const d = await res.json();
+    if (!d.record || d.record.role !== 'admin') { sessionStorage.removeItem('held-consult-session'); return; }
+    authToken = d.token; currentUser = d.record;
+    sessionStorage.setItem('held-consult-session', JSON.stringify({ token: authToken, user: currentUser }));
+    enterApp();
+  } catch (e) { /* stay on the login screen */ }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' || document.getElementById('login-screen').style.display === 'none') return;
+  if (document.getElementById('login-box-password').style.display !== 'none') doLogin();
+  else submitOtp();
+});
+
+// ═══ START AN INTAKE ═══
+async function startIntake() {
+  const btn = document.getElementById('btn-start');
+  const date = document.getElementById('consult-date').value || todayLA();
+  showError('start-error', '');
+  btn.disabled = true;
+  btn.textContent = 'Starting…';
+  try {
+    const data = await api('POST', '/admin/intakes/start', { consultation_date: date });
+    lastLink = data.link;
+    lastCode = data.engagement_code;
+    document.getElementById('result-code').textContent = data.engagement_code;
+    document.getElementById('result-meta').textContent = `Consultation date ${data.consultation_date} · draft created`;
+    document.getElementById('start-result').style.display = 'block';
+    loadIntakes();
+  } catch (e) {
+    if (e.message !== 'Session expired') showError('start-error', e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Start consultation intake';
+  }
+}
+
+// ═══ LINKS ═══
+function openForm(link) {
+  if (link) window.open(link, '_blank', 'noopener');
+}
+
+async function copyText(text, message) {
+  if (!text) return;
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast(message);
+  } catch (e) {
+    window.prompt('Copy this:', text);
+  }
+}
+
+function copyLink(link) {
+  copyText(link, 'Client link copied. Paste it into your email to the client.');
+}
+
+async function linkFor(code) {
+  const data = await api('GET', `/admin/intakes/${encodeURIComponent(code)}/link`);
+  return data.link;
+}
+
+async function openDraft(code) {
+  try { openForm(await linkFor(code)); }
+  catch (e) { if (e.message !== 'Session expired') alert(e.message); }
+}
+
+async function copyDraftLink(code) {
+  try { copyLink(await linkFor(code)); }
+  catch (e) { if (e.message !== 'Session expired') alert(e.message); }
+}
+
+// ═══ LIST ═══
+async function loadIntakes() {
+  const listEl = document.getElementById('intake-list');
+  listEl.innerHTML = '<div class="loading">Loading…</div>';
+  try {
+    const data = await api('GET', '/admin/intakes');
+    const items = data.items || [];
+    if (items.length === 0) {
+      listEl.innerHTML = '<div class="empty-state"><h3>No intakes yet</h3><p>Start one above when your next consultation begins.</p></div>';
+      return;
+    }
+    listEl.innerHTML = items.map(rec => {
+      const submitted = rec.status === 'submitted';
+      const meta = submitted
+        ? `Consultation ${rec.consultation_date || '—'} · submitted ${rec.submitted_at || '—'}`
+        : `Consultation ${rec.consultation_date || '—'} · at step ${Math.min(rec.current_step + 1, TOTAL_STEPS)} of ${TOTAL_STEPS}`;
+      const code = escHtml(rec.engagement_code);
+      const actions = submitted
+        ? `<a class="btn btn-outline" href="${PB_URL}/_/#/collections?collection=screening_intakes&recordId=${encodeURIComponent(rec.id)}" target="_blank" rel="noopener">View in PocketBase</a>`
+        : `<button class="btn btn-outline" onclick="openDraft('${code}')">Open form</button>
+           <button class="btn btn-outline" onclick="copyDraftLink('${code}')">Copy client link</button>`;
+      return `<div class="intake-card">
+        <div><div class="intake-code">${code || '(no code)'}</div><div class="intake-meta">${escHtml(meta)}</div></div>
+        <div class="intake-right">
+          <span class="intake-status ${submitted ? 'status-submitted' : 'status-draft'}">${submitted ? 'submitted' : 'draft'}</span>
+          ${actions}
+        </div>
+      </div>`;
+    }).join('');
+  } catch (e) {
+    if (e.message !== 'Session expired') {
+      listEl.innerHTML = `<div class="empty-state"><h3>Could not load</h3><p>${escHtml(e.message)}</p></div>`;
+    }
+  }
+}
+
+restoreSession();
+</script>
+</body>
+</html>
