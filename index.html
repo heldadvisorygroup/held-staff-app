@@ -140,6 +140,9 @@
   .badge-fair      { background: rgba(171,173,154,0.3); color: var(--ink-mid); }
   .badge-draft     { background: rgba(71,72,56,0.08);   color: var(--ink-soft); }
   .badge-complete  { background: rgba(134,175,168,0.2); color: #2D6B63; }
+  .badge-in_review { background: rgba(237,252,78,0.3);  color: #4A5200; }
+  .thumb.thumb-src { border-style: dashed; opacity: 0.85; }
+  .td-loc { font-size: 12px; color: var(--ink-mid); max-width: 170px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .btn-edit { background: none; border: 1px solid var(--border); color: var(--ink-mid); padding: 4px 12px; font-family: var(--font-body); font-size: 10px; letter-spacing: 0.08em; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
   .btn-edit:hover { border-color: var(--teal); color: var(--teal); }
   .empty-state { text-align: center; padding: 72px 32px; color: var(--ink-soft); font-style: italic; }
@@ -359,6 +362,7 @@
         <select class="filter-select" id="status-filter" onchange="filterItems()">
           <option value="">All Status</option>
           <option value="draft">Draft</option>
+          <option value="in_review">In review</option>
           <option value="complete">Complete</option>
         </select>
         <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink-mid);cursor:pointer;user-select:none;border:1px solid var(--border-strong);padding:6px 10px;background:var(--white);">
@@ -374,7 +378,7 @@
       <table>
         <thead>
           <tr>
-            <th>⚑</th><th>QC</th><th>Attachments</th><th>Room</th><th>Description</th>
+            <th>⚑</th><th>QC</th><th>Attachments</th><th>Room</th><th>Location</th><th>Description</th>
             <th>Brand</th><th>Qty</th><th>Age (yrs)</th><th>Condition</th><th>Model #</th>
             <th>Serial #</th><th>Repl. Value</th><th>Status</th><th></th>
           </tr>
@@ -503,7 +507,12 @@
         <div class="form-grid">
           <div class="form-group span-2"><label>Item Description *</label><input type="text" id="f-desc" placeholder="e.g. Mid-century 3-drawer dresser, teak veneer, tapered legs"></div>
           <div class="form-group"><label>Brand / Maker</label><input type="text" id="f-brand"></div>
-          <div class="form-group"><label>Room Code</label><input type="text" id="f-room" placeholder="PLR, KIT, PMB…"></div>
+          <div class="form-group"><label>Room Code</label><input type="text" id="f-room" placeholder="LIV, KIT, PBD…"></div>
+          <div class="form-group"><label>Location in Room</label><input type="text" id="f-location" placeholder="e.g. Fireplace wall, over mantel"></div>
+          <div class="form-group"><label>Item Code</label><input type="text" id="f-item-code" placeholder="e.g. LIV-008"></div>
+          <div class="form-group"><label>Category</label><input type="text" id="f-category" placeholder="e.g. Furniture, Electronics, Paintings"></div>
+          <div class="form-group"><label>Registry Ref</label><input type="text" id="f-registry-ref" placeholder="e.g. S001-PTG-001"></div>
+          <div class="form-group span-2"><label>Documentation on File</label><input type="text" id="f-doc-on-file" placeholder="e.g. Dealer invoice, 2018; appraisal, 2019"></div>
           <div class="form-group">
             <label>Disposition</label>
             <select id="f-disposition"><option value="">— select —</option><option value="restorable">Restorable</option><option value="non_restorable">Non-Restorable</option><option value="unknown">Unknown</option></select>
@@ -515,7 +524,7 @@
           <div class="form-group"><label>Quantity</label><input type="number" id="f-qty" min="1" value="1"></div>
           <div class="form-group">
             <label>Status</label>
-            <select id="f-status"><option value="draft">Draft</option><option value="complete">Complete</option></select>
+            <select id="f-status"><option value="draft">Draft</option><option value="in_review">In review</option><option value="complete">Complete</option></select>
           </div>
         </div>
       </div>
@@ -933,15 +942,15 @@ function showEngagements() {
 async function loadItems() {
   await refreshFileToken();
   const tbody=document.getElementById('items-tbody');
-  tbody.innerHTML='<tr><td colspan="14" class="loading">Loading items…</td></tr>';
+  tbody.innerHTML='<tr><td colspan="15" class="loading">Loading items…</td></tr>';
   try {
-    const res=await fetch(`${POCKETBASE_URL}/api/collections/items/records?filter=(engagement_id='${currentEngagement.id}')&perPage=500&sort=room,item_description`,{headers:{'Authorization':authToken}});
+    const res=await fetch(`${POCKETBASE_URL}/api/collections/items/records?filter=(engagement_id='${currentEngagement.id}')&perPage=500&sort=room,item_description&expand=source_capture`,{headers:{'Authorization':authToken}});
     const data=await res.json();
     allItems=data.items||[];
     document.getElementById('export-count').textContent=allItems.length;
     await loadFlags();
     populateRoomFilter();renderItems(allItems);
-  } catch(e){tbody.innerHTML=`<tr><td colspan="14" style="padding:24px;color:#8B3A3A;font-style:italic;">${e.message}</td></tr>`;}
+  } catch(e){tbody.innerHTML=`<tr><td colspan="15" style="padding:24px;color:#8B3A3A;font-style:italic;">${e.message}</td></tr>`;}
 }
 
 function populateRoomFilter() {
@@ -960,10 +969,23 @@ function attachmentUrl(itemId,filename) {
   return fileToken ? `${base}?token=${encodeURIComponent(fileToken)}` : base;
 }
 function isImage(f){return /\.(jpg|jpeg|png|gif|webp|heic|heif)$/i.test(f);}
+// Small thumbnail for list views. Needs "100x100" in the file field's Thumb sizes in PocketBase;
+// without it PocketBase returns the full image, so this is safe either way.
+const LIST_THUMB='100x100';
+function thumbUrl(coll,id,fname){
+  const base=`${POCKETBASE_URL}/api/files/${coll}/${id}/${encodeURIComponent(fname)}?thumb=${LIST_THUMB}`;
+  return fileToken ? `${base}&token=${encodeURIComponent(fileToken)}` : base;
+}
+// The capture an item was identified from (room 360, open-storage or detail shot), if any
+function sourceCapture(item){
+  const c=item&&item.expand&&item.expand.source_capture;
+  return (c&&c.photo)?c:null;
+}
+function blankZero(v){return (v===null||v===undefined||v===''||Number(v)===0);}
 
 function renderItems(items) {
   const tbody=document.getElementById('items-tbody');
-  if(items.length===0){tbody.innerHTML='<tr><td colspan="14" class="empty-state" style="padding:52px;font-style:italic;color:var(--ink-soft);">No items found. Use "+ Add Item" to begin.</td></tr>';return;}
+  if(items.length===0){tbody.innerHTML='<tr><td colspan="15" class="empty-state" style="padding:52px;font-style:italic;color:var(--ink-soft);">No items found. Use "+ Add Item" to begin.</td></tr>';return;}
   tbody.innerHTML='';
   items.forEach(item=>{
     const tr=document.createElement('tr');
@@ -982,17 +1004,23 @@ function renderItems(items) {
       shown.forEach(fname=>{
         const url=attachmentUrl(item.id,fname);
         if(isImage(fname)){
-          thumbHtml+=`<img class="thumb" src="${url}" alt="${fname}" title="${fname}" onclick="event.stopPropagation();openLightbox('${url}')">`;
+          thumbHtml+=`<img class="thumb" src="${thumbUrl('items',item.id,fname)}" loading="lazy" alt="${fname}" title="${fname}" onclick="event.stopPropagation();openLightbox('${url}')">`;
         } else {
           thumbHtml+=`<div class="thumb-pdf" title="${fname}" onclick="event.stopPropagation();window.open('${url}','_blank')">PDF</div>`;
         }
       });
       if(extra>0) thumbHtml+=`<span class="thumb-more">+${extra}</span>`;
       thumbHtml+='</div>';
+    } else if(sourceCapture(item)){
+      // No photo of its own: show the capture it was identified from (dashed border)
+      const c=sourceCapture(item);
+      const full=fileUrl('captures',c.id,c.photo);
+      const tip=escHtml(`Source: ${c.room||''}${c.label?', '+c.label:''}`);
+      thumbHtml=`<div class="thumb-strip"><img class="thumb thumb-src" src="${thumbUrl('captures',c.id,c.photo)}" loading="lazy" alt="${tip}" title="${tip}" onclick="event.stopPropagation();openLightbox('${full}')"></div>`;
     }
-    const ageBadge=item.age_years!=null?`${item.age_years} yr`:'—';
+    const ageBadge=blankZero(item.age_years)?'—':`${item.age_years} yr`;
     const qcCell=`<button class="qc-btn ${qcOpen>0?'has-open':''}" title="Flag this item" onclick="event.stopPropagation();openQcPopover('${item.id}',this)">🚩${qcOpen>0?`<span class="qc-count">${qcOpen}</span>`:''}</button>`;
-    tr.innerHTML=`<td class="td-flag">${item.appraisal_flag?'⚑':''}</td><td class="td-qc">${qcCell}</td><td>${thumbHtml}</td><td style="color:var(--ink-soft);font-size:12px;">${item.room||'—'}</td><td class="td-desc" title="${(item.item_description||'').replace(/"/g,"'")}">${item.item_description||'—'}</td><td style="color:var(--ink-mid);font-size:12px;">${item.brand_maker||'—'}</td><td style="text-align:center;">${item.quantity||1}</td><td style="text-align:center;font-size:12px;color:var(--ink-mid);">${ageBadge}</td><td>${condBadge}</td><td style="font-size:12px;color:var(--ink-mid);">${item.model_number||'—'}</td><td style="font-size:12px;color:var(--ink-mid);">${item.serial_number||'—'}</td><td style="font-size:12px;">${item.replacement_value_each?'$'+Number(item.replacement_value_each).toLocaleString():'—'}</td><td>${statBadge}</td><td><button class="btn-edit" onclick="openEditItem('${item.id}')">Edit</button></td>`;
+    tr.innerHTML=`<td class="td-flag">${item.appraisal_flag?'⚑':''}</td><td class="td-qc">${qcCell}</td><td>${thumbHtml}</td><td style="color:var(--ink-soft);font-size:12px;">${item.room||'—'}</td><td class="td-loc" title="${escHtml(item.location||'')}">${escHtml(item.location||'—')}</td><td class="td-desc" title="${(item.item_description||'').replace(/"/g,"'")}">${item.item_description||'—'}</td><td style="color:var(--ink-mid);font-size:12px;">${item.brand_maker||'—'}</td><td style="text-align:center;">${item.quantity||1}</td><td style="text-align:center;font-size:12px;color:var(--ink-mid);">${ageBadge}</td><td>${condBadge}</td><td style="font-size:12px;color:var(--ink-mid);">${item.model_number||'—'}</td><td style="font-size:12px;color:var(--ink-mid);">${item.serial_number||'—'}</td><td style="font-size:12px;">${item.replacement_value_each?'$'+Number(item.replacement_value_each).toLocaleString():'—'}</td><td>${statBadge}</td><td><button class="btn-edit" onclick="openEditItem('${item.id}')">Edit</button></td>`;
     tbody.appendChild(tr);
   });
 }
@@ -1023,8 +1051,11 @@ function renderExistingAttachments(item){
   const grid=document.getElementById('existing-attachments');
   const sources=itemPhotoFiles(item);
   const attachments=[...sources,...(item?.attachments||[])];
-  if(attachments.length===0){grid.innerHTML='';return;}
-  grid.innerHTML=attachments.map(fname=>{
+  // The capture this item was identified from. Shown read-only: it belongs to the capture, not the item.
+  const cap=sourceCapture(item);
+  const capHtml=cap?`<div class="attachment-item" title="Source capture (read-only)"><img src="${thumbUrl('captures',cap.id,cap.photo)}" alt="" onclick="openLightbox('${fileUrl('captures',cap.id,cap.photo)}')"><div class="attachment-name">Source capture: ${escHtml(cap.room||'')}${cap.label?', '+escHtml(cap.label):''}</div></div>`:'';
+  if(attachments.length===0){grid.innerHTML=capHtml;return;}
+  grid.innerHTML=capHtml+attachments.map(fname=>{
     const url=attachmentUrl(item.id,fname);
     const short=(sources.includes(fname)?'Source: ':'')+(fname.length>20?fname.substring(0,18)+'…':fname);
     if(isImage(fname)){
@@ -1066,13 +1097,18 @@ function openEditItem(id){
   document.getElementById('f-desc').value=item.item_description||'';
   document.getElementById('f-brand').value=item.brand_maker||'';
   document.getElementById('f-room').value=item.room||'';
+  document.getElementById('f-location').value=item.location||'';
+  document.getElementById('f-item-code').value=item.item_code||'';
+  document.getElementById('f-category').value=item.category||'';
+  document.getElementById('f-registry-ref').value=item.registry_ref||'';
+  document.getElementById('f-doc-on-file').value=item.documentation_on_file||'';
   document.getElementById('f-disposition').value=item.disposition||'';
   document.getElementById('f-condition').value=item.condition||'';
   document.getElementById('f-qty').value=item.quantity||1;
   document.getElementById('f-status').value=item.status||'draft';
   document.getElementById('f-model').value=item.model_number||'';
   document.getElementById('f-serial').value=item.serial_number||'';
-  document.getElementById('f-age').value=item.age_years!=null?item.age_years:'';
+  document.getElementById('f-age').value=blankZero(item.age_years)?'':item.age_years;
   document.getElementById('f-flag').value=item.appraisal_flag?'true':'false';
   document.getElementById('f-retailer').value=item.retailer||'';
   document.getElementById('f-repl-source').value=item.replacement_source||'';
@@ -1115,7 +1151,7 @@ function goToAdjacentItem(offset){
   openEditItem(list[newIdx].id);
 }
 function clearModal(){
-  ['f-desc','f-brand','f-room','f-model','f-serial','f-age','f-retailer','f-repl-source','f-notes','f-depr-cat'].forEach(id=>document.getElementById(id).value='');
+  ['f-desc','f-brand','f-room','f-location','f-item-code','f-category','f-registry-ref','f-doc-on-file','f-model','f-serial','f-age','f-retailer','f-repl-source','f-notes','f-depr-cat'].forEach(id=>document.getElementById(id).value='');
   ['f-disposition','f-condition'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-qty').value=1;
   document.getElementById('f-status').value='draft';
@@ -1154,6 +1190,11 @@ async function saveItem(andNext=false){
   fd.append('item_description',document.getElementById('f-desc').value.trim());
   fd.append('brand_maker',document.getElementById('f-brand').value.trim());
   fd.append('room',document.getElementById('f-room').value.trim().toUpperCase());
+  fd.append('location',document.getElementById('f-location').value.trim());
+  fd.append('item_code',document.getElementById('f-item-code').value.trim());
+  fd.append('category',document.getElementById('f-category').value.trim());
+  fd.append('registry_ref',document.getElementById('f-registry-ref').value.trim());
+  fd.append('documentation_on_file',document.getElementById('f-doc-on-file').value.trim());
   fd.append('disposition',document.getElementById('f-disposition').value);
   fd.append('condition',document.getElementById('f-condition').value);
   fd.append('quantity',parseInt(document.getElementById('f-qty').value)||1);
@@ -1204,9 +1245,9 @@ async function saveItem(andNext=false){
 
 // CSV Export
 function exportCSV(){
-  const cols=['Room','Photo','Item Description','Brand / Maker','Disposition','Condition','Quantity','Age (years)','Model #','Serial #','Retailer','Replacement Source','Purchase Price (each)','Purchase Price (total)','Replacement Value (each)','Replacement Value (total)','Depreciation Category','Depreciation %','Notes','Appraisal Flag','Attachments'];
+  const cols=['Item Code','Room','Location','Category','Photo','Item Description','Brand / Maker','Disposition','Condition','Quantity','Age (years)','Model #','Serial #','Retailer','Replacement Source','Purchase Price (each)','Purchase Price (total)','Replacement Value (each)','Replacement Value (total)','Depreciation Category','Depreciation %','Notes','Appraisal Flag','Attachments','Documentation on File','Registry Ref'];
   const rows=allItems.map(i=>[
-    i.room||'',i.photo_files||'',i.item_description||'',i.brand_maker||'',
+    i.item_code||'',i.room||'',i.location||'',i.category||'',i.photo_files||'',i.item_description||'',i.brand_maker||'',
     i.disposition||'',i.condition||'',i.quantity||1,
     i.age_years!=null?i.age_years:'',
     i.model_number||'',i.serial_number||'',
@@ -1214,7 +1255,8 @@ function exportCSV(){
     i.purchase_price_each||'',(i.purchase_price_each&&i.quantity)?(i.purchase_price_each*i.quantity).toFixed(2):'',
     i.replacement_value_each||'',(i.replacement_value_each&&i.quantity)?(i.replacement_value_each*i.quantity).toFixed(2):'',
     i.depreciation_category||'',i.depreciation_pct?(i.depreciation_pct/100).toFixed(4):'',
-    i.notes||'',i.appraisal_flag?'YES':'',(i.attachments||[]).join('; ')
+    i.notes||'',i.appraisal_flag?'YES':'',(i.attachments||[]).join('; '),
+    i.documentation_on_file||'',i.registry_ref||''
   ]);
   const csv=[cols,...rows].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
   const blob=new Blob([csv],{type:'text/csv'});
